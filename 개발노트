@@ -1,0 +1,61 @@
+###########################################################################
+#> aab build 명령어: flutter build appbundle --no-sound-null-safety
+#> apk build 명령어: fluter build apk --release --no-sound-null-safety
+#> ipa build 명령어: flutter build ios --release
+###########################################################################
+#2021 - 12 - 02
+> google play console,, metadata 정책 문제
+    >> 애플리케이션 상세 정보 수정
+    >> 앱 정보\기본 스토어 등록정보\ 
+
+> location permission request 할때 always allow를 위해 앱 설정을 띄우고 싶음
+
+#2021 - 11 - 30
+> 플러터에서 백그라운드 서비스 못찾겠음~
+    >> isolate쓰면 멀티 프로세스 개념으로 개발가능
+> 플러터에서 isolate써서 할려니까 immortal service 못만들겠잔슴~ 
+    >> 이게되면 ios 코드 새로 안짜도 됨
+> 안드로이드 코드를 호출하는 방식(methodchannel) 써야 되잖슴~ 
+    >> methodchannel을 통해 Android 서비스 코드를 불러올 수 있음.
+> 플러터에서 notification만들고 서비스만 안드로이드 하려니까 거도 안되잔슴~
+    >> Android Service가 Flutter Notification을 인식 못함
+> 정 안되면 서비스 로직은 전부 안드로이드에서 구현하는식으로 해야할듯 
+    >> 안드로이드는 문제 없는데 ios는 코드를 새로 짜야함.
+
+
+#2021 11 25 -
+> pubspec.yml:: fluttertoast 추가 (Toast 기능 사용)
+> inappwebview 관련 코드는 webview 폴더에서 관리
+> cookieManager를 통해 쿠키 관리 
+> flutter create -i objc -a java 'project_name'로 java로 구성된 Android프로젝트로 만듬 
+> background service: {
+    -- Android
+    1. MethodChannel을 통해 Flutter와 Java(Android) 연결
+    2. Java에서 기존과 같이 서비스제작
+    3. Locatoin / TcpNetwork 구현
+}
+> Flutter에서 Permission 체크 후 Android에서 실행하도록
+
+#2021 11 22
+> 프로젝트 생성
+> pubspec.yml:: fltter_inappwebview 추가
+> ios/Runner/info.plist :: io.flutter.embedded_views_preview - YES <ios 설정>
+> android/app/src/main/AndroidManifest.xml :: permission.INTERNET <android 설정>
+> build.gradle , minSdk: 16 -> 19
+> WillPopScope()를 통해서 뒤로가기 버튼 이벤트 추가
+> InAppWebViewController를 통해서 webview에 대한 javascript interface 추가
+
+
+** <trying to create a platform view of unregistered type plugins.flutter.io/webview>
+1. info.plist, AndroidManifest 파일에 각각 dependencies 추가 확인
+2. flutter clean 로 build 지우기
+3. flutter run 으로 다시 build
+
+** ERR_CLEARTEXT_NOT_PERMITTED
+1. android > AndroidManifest,, usesCleartextTraffic=true 추가
+
+** failed to get fallback imm with expected displayid 
+1. WebView.platform = SurfaceAndroidWebView() 추가함으로 제거
+
+** webview http white screen
+1. loadUrl 할때 javascriptmode : javascriptmode.unrestricted 해줘야함
