@@ -1,4 +1,4 @@
-package com.example.zipsmobile_f;
+package com.softzen.hansungai;
 
 import android.app.Service;
 import android.content.Intent;

@@ -1,14 +1,18 @@
 ###########################################################################
 #> aab build 명령어: flutter build appbundle --no-sound-null-safety
-#> apk build 명령어: fluter build apk --release --no-sound-null-safety
+#> apk build 명령어: flutter build apk --release --no-sound-null-safety
 #> ipa build 명령어: flutter build ios --release
 ###########################################################################
+
 #2021 - 12 - 02
 > google play console,, metadata 정책 문제
     >> 애플리케이션 상세 정보 수정
     >> 앱 정보\기본 스토어 등록정보\ 
 
 > location permission request 할때 always allow를 위해 앱 설정을 띄우고 싶음
+> flutter app을 google play console에 등록하려니 Android Studio에서와 같은 keysotre가 필요.
+    C:\val\keystore\androidkey.jks 를 사용해서 만들어야함.
+    >> Android 폴더에 key.properties 추가, build.gradle수정 등을 통해 해결 
 
 #2021 - 11 - 30
 > 플러터에서 백그라운드 서비스 못찾겠음~

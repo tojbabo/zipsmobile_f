@@ -28,7 +28,7 @@ class Request extends StatelessWidget {
                     getBasicText(text: "백그라운드 위치 정보 수집", fontsize: 18),
                     getBasicText(
                         text:
-                            "ZIPSAI는 사용자의 이동패턴을 예측하여 자동화된 서비스를 제공하기 위해 위치데이터를 수집합니다."),
+                            "ZIPSAI는 앱이 종료되었거나 사용 중이 아닐 때도 위치 데이터를 수집하여 사용자의 이동패턴 예측 기능을 지원합니다."),
                     getBasicText(
                         text:
                             "1. 앱이 실행 중이거나 실행 중이지 않을 때, 종료되었을 때에도 위치 데이터를 수집하여 서버 DB에 저장합니다.\n" +
@@ -103,6 +103,7 @@ void _requestPermission() async {
   await openAppSettings().then((value) {
     Future.delayed(Duration(seconds: 10)).then((value) => startService());
   });
+
   // var status = await Permission.location.status;
   // if (status.isDenied) {
   //   if (await Permission.location.request().isGranted) {

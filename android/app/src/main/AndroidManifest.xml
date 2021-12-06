@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.zipsmobile_f">
+    package="com.softzen.hansungai">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -9,12 +9,13 @@
 
     <application
         android:icon="@mipmap/ic_launcher"
-        android:label="zipsmobile_f"
+        android:label="ZIPSAI"
+        android:name="com.softzen.hansungai"
         android:usesCleartextTraffic="true">
         <service
             android:name="._ServiceReceiver"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true"/>
         <service
             android:name="._ServiceCore"
             android:enabled="true"

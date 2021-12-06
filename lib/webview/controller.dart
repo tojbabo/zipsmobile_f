@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:zipsmobile_f/globals.dart';
 
@@ -21,7 +22,8 @@ void controllerSetHandler(InAppWebViewController controller) {
   controller.addJavaScriptHandler(
       handlerName: "appclose",
       callback: (arg) {
-        exit(0);
+        //exit(0);
+        SystemNavigator.pop();
       });
 
   //webheight[구현]: 웹 기장 받아서 저장
@@ -44,14 +46,17 @@ void controllerSetHandler(InAppWebViewController controller) {
       callback: (arg) {
         String msg = arg.cast<String>()[0];
 
-        cookieManager.setCookie(
-            url: Uri.parse(g__servHttpsAdr),
-            name: 'autologin',
-            value: msg,
-            domain: '.zips.ai',
-            isSecure: true);
-
-        // if(msg.length<1) 쿠키에 fail 저장
+        if (msg.length < 1)
+          cookieManager.deleteCookie(
+              url: Uri.parse(g__servHttpsAdr), name: 'autologin');
+        else {
+          cookieManager.setCookie(
+              url: Uri.parse(g__servHttpsAdr),
+              name: 'autologin',
+              value: msg,
+              domain: '.zips.ai',
+              isSecure: true);
+        }
         // else 쿠키에 msg 저장
       });
 

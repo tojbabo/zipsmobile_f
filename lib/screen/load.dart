@@ -21,15 +21,15 @@ class Load extends StatelessWidget {
         }
         print(macid);
 
-        // Navigator.pushReplacement(
-        //     context, MaterialPageRoute(builder: (context) => MainApp()));
-        // if (flag) {
-        //   Navigator.push(
-        //       context, MaterialPageRoute(builder: (context) => Request()));
-        // }
-
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => Request()));
+            context, MaterialPageRoute(builder: (context) => MainApp()));
+        if (flag) {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => Request()));
+        }
+
+        //   Navigator.pushReplacement(
+        //       context, MaterialPageRoute(builder: (context) => Request()));
       });
     });
 

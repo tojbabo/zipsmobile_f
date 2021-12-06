@@ -1,13 +1,13 @@
-package com.example.zipsmobile_f;
+package com.softzen.hansungai;
 
 public class Vals {
     public static String version ="1.1.0";
 
     public static String ip = "dev.zips.ai";
-   public static String webport = "12000";
-   public static String tcpport = "12050";
-    // public static String webport = "10009";
-    // public static String tcpport = "10050";
+//    public static String webport = "12000";
+//    public static String tcpport = "12050";
+    public static String webport = "10009";
+    public static String tcpport = "10050";
     public static int interval = 30*1000;
 
     public static int loc_MinDistance = 10;

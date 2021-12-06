@@ -1,6 +1,4 @@
-package com.example.zipsmobile_f;
-
-
+package com.softzen.hansungai;
 import android.Manifest;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -26,14 +24,11 @@ public class MainActivity extends FlutterActivity {
         new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), CHANNEL).setMethodCallHandler(
                 ((call, result) -> {
                     if(call.method.equals( "service")) {
-                        if(permissionCheck()) {
                             macid = call.argument("macid") .toString();
                             // Toast.makeText(this, "macid: "+macid, Toast.LENGTH_SHORT).show();
                             dispatchTakePictureInterIntent();
-                        }
-                        else{
                             // Toast.makeText(this, "false", Toast.LENGTH_SHORT).show();
-                        }
+                        
 
                     }
                 }));
@@ -45,13 +40,6 @@ public class MainActivity extends FlutterActivity {
             it.putExtra("macID",macid);
             startService(it);
         }
-    }
-    private boolean permissionCheck(){
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return false;
-        }
-        return true;
     }
     private boolean isServiceRun(String serviceName){
             ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);

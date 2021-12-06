@@ -1,4 +1,4 @@
-package com.example.zipsmobile_f;
+package com.softzen.hansungai;
 
 import android.Manifest;
 import android.app.Notification;
@@ -38,6 +38,12 @@ public class _ServiceCore extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         macId = intent.getStringExtra("macID");
         createNotificationChannel();
+
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                    ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+               return START_STICKY;
+        }
 
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
