@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
@@ -25,7 +26,7 @@ public class _ServiceCore extends Service {
     public static final String CHANNEL_ID = "ForegroundServiceChannel";
     _taskLoc taskLoc;
     _taskTcp taskTcp;
-    String macId;
+    Vals val = Vals.get_instance();
     IBinder binder = new LocalBinder();
 
     @Override
@@ -36,7 +37,6 @@ public class _ServiceCore extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        macId = intent.getStringExtra("macID");
         createNotificationChannel();
 
 
@@ -62,8 +62,8 @@ public class _ServiceCore extends Service {
 
         startForeground(1, notification);
 
-        taskTcp = new _taskTcp(macId,queue);
-        taskLoc = new _taskLoc(macId, queue, this);
+        taskTcp = new _taskTcp(queue);
+        taskLoc = new _taskLoc(queue, this);
 
         taskTcp.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         taskLoc.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -78,9 +78,9 @@ public class _ServiceCore extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-
-        taskLoc.cancel(false);
-        taskTcp.cancel(false);
+        Log.d("stop", "onDestroy: ");
+        taskLoc.cancel(true);
+        taskTcp.cancel(true);
 
         stopForeground(true);
         stopSelf();

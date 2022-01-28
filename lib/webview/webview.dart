@@ -40,6 +40,8 @@ Widget getwebview() {
 }
 
 void closepop() {
+  print('test here');
+  // _webViewController?.goBack();
   _webViewController?.loadUrl(
-      urlRequest: URLRequest(url: Uri.parse("javascript:closeopen()")));
+      urlRequest: URLRequest(url: Uri.parse("javascript:goback()")));
 }

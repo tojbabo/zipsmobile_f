@@ -10,7 +10,7 @@
     <application
         android:icon="@mipmap/ic_launcher"
         android:label="ZIPSAI"
-        android:name="com.softzen.hansungai"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:usesCleartextTraffic="true">
         <service
             android:name="._ServiceReceiver"

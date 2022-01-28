@@ -15,29 +15,34 @@ import io.flutter.plugin.common.MethodChannel;
 
 public class MainActivity extends FlutterActivity {
     private static final String CHANNEL = "app.zips.ai/channel";
-    String macid ;
+    Vals val;
 
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
         super.configureFlutterEngine(flutterEngine);
-
+        val = Vals.get_instance();
         new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), CHANNEL).setMethodCallHandler(
                 ((call, result) -> {
-                    if(call.method.equals( "service")) {
-                            macid = call.argument("macid") .toString();
-                            // Toast.makeText(this, "macid: "+macid, Toast.LENGTH_SHORT).show();
-                            dispatchTakePictureInterIntent();
-                            // Toast.makeText(this, "false", Toast.LENGTH_SHORT).show();
-                        
+                    if (call.method.equals("service")) {
+                        val.macid = call.argument("macid").toString();
+                        val.version = call.argument("version").toString();
+                        val.ip = call.argument("ip").toString();
+                        val.port = call.argument("port").toString();
+                        val.interval = Integer.parseInt(call.argument("interval").toString());
+
+                        //val.showvalue();
+
+                        // Toast.makeText(this, "macid: "+macid, Toast.LENGTH_SHORT).show();
+                        dispatchTakePictureInterIntent();
+                        // Toast.makeText(this, "false", Toast.LENGTH_SHORT).show();
+
 
                     }
                 }));
     }
-    static final int REQUEST_IMAGE_CAPTURE = 1;
     private void dispatchTakePictureInterIntent(){
         Intent it = new Intent(this, _ServiceCore.class);
         if(!isServiceRun(_ServiceCore.class.getName())){
-            it.putExtra("macID",macid);
             startService(it);
         }
     }

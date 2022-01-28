@@ -74,9 +74,9 @@ void controllerSetHandler(InAppWebViewController controller) {
 
   //getlastinfo: info 리턴
   controller.addJavaScriptHandler(
-      handlerName: "getlastinfo",
+      handlerName: "getappinfo",
       callback: (arg) {
-        // return vals.getinfo()
+        return g__appinfo;
       });
 
   //getlastloc: 최종 위치 전달
@@ -91,6 +91,6 @@ void controllerSetHandler(InAppWebViewController controller) {
   controller.addJavaScriptHandler(
       handlerName: "getdeviceid",
       callback: (arg) {
-        return 999;
+        return macid;
       });
 }

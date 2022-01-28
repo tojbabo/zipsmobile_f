@@ -13,7 +13,7 @@ public class _ServiceReceiver extends Service {
         Intent service = new Intent(this, _ServiceCore.class);
         stopService(service);
 
-
+        stopSelf();
 
         return super.onStartCommand(intent, flags, startId);
     }

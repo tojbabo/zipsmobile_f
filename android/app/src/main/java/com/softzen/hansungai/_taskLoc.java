@@ -20,12 +20,11 @@ import java.util.List;
 public class _taskLoc extends AsyncTask<Void,Void,Boolean> {
     List<String> queue;
     Context _context;
-    String macId;
+    Vals val = Vals.get_instance();
     LocationManager locationManager;
     LocationListener locationListener;
-    public _taskLoc(String Id, List<String> queue, Context context) {
+    public _taskLoc(List<String> queue, Context context) {
         this.queue = queue;
-        this.macId = Id;
         this._context = context;
         locationManager = null;
     }
@@ -40,17 +39,17 @@ public class _taskLoc extends AsyncTask<Void,Void,Boolean> {
             public void run() {
                 if (ActivityCompat.checkSelfPermission(_context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
                         ActivityCompat.checkSelfPermission(_context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, Vals.interval, Vals.loc_MinDistance, getListener("NETWORK"));
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, Vals.interval, Vals.loc_MinDistance, getListener("GPS"));
+                    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, val.interval, val.loc_MinDistance, getListener("NETWORK"));
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, val.interval, val.loc_MinDistance, getListener("GPS"));
                 }
             }
         }, 3000);
 
         while (!this.isCancelled()) {
             try {
-                Thread.sleep(Vals.interval);
+                Thread.sleep(val.interval);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
         }
 
@@ -60,6 +59,8 @@ public class _taskLoc extends AsyncTask<Void,Void,Boolean> {
 
     @Override
     protected void onCancelled() {
+
+        Log.d("loc", "onCancelled: ");
         super.onCancelled();
     }
 
@@ -67,14 +68,14 @@ public class _taskLoc extends AsyncTask<Void,Void,Boolean> {
         return new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                if (location.getAccuracy() > Vals.loc_MinAccuracy) return;
+                if (location.getAccuracy() > val.loc_MinAccuracy) return;
                 if(queue.size() >10) queue.remove(queue.size());
                 if(location.getLatitude() <32.8 || location.getLatitude() > 38.8) return;
                 if(location.getLongitude() <125.5 || location.getLongitude() > 131.9) return;
 
                 @SuppressLint("DefaultLocale")
                 String msg = String.format("{location,id:%s,tag:%s,lat:%f,lng:%f,spd:%f,acc:%.2f,alt:%.2f}",
-                        macId, tag, location.getLatitude(), location.getLongitude(),
+                        val.macid, tag, location.getLatitude(), location.getLongitude(),
                         location.getSpeed(), location.getAccuracy(), location.getAltitude());
                 queue.add(msg);
             }
@@ -116,7 +117,7 @@ public class _taskLoc extends AsyncTask<Void,Void,Boolean> {
         else return "";
 
         String result =  String.format("location,id:%s,tag:%s,lat:%f,lng:%f,spd:%f,acc:%.2f,alt:%.2f",
-                macId, tag, location.getLatitude(), location.getLongitude(),
+                val.macid, tag, location.getLatitude(), location.getLongitude(),
                 location.getSpeed(), location.getAccuracy(), location.getAltitude());
 
 
