@@ -72,7 +72,7 @@ void controllerSetHandler(InAppWebViewController controller) {
         //쿠키에 페일 저장
       });
 
-  //getlastinfo: info 리턴
+  //getlastinfo[구현]: info 리턴
   controller.addJavaScriptHandler(
       handlerName: "getappinfo",
       callback: (arg) {
@@ -87,7 +87,7 @@ void controllerSetHandler(InAppWebViewController controller) {
         // 얻어온 위치 리턴
       });
 
-//getdeviceid: 기기 id 전달
+  //getdeviceid[구현]: 기기 id 전달
   controller.addJavaScriptHandler(
       handlerName: "getdeviceid",
       callback: (arg) {

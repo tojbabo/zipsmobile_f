@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'globals.dart';
 
 final MethodChannel channel = new MethodChannel('app.zips.ai/channel');
+
+/// android Service를 시작하는 함수
 Future<void> startService() async {
   try {
     await channel.invokeMethod('service', {

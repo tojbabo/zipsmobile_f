@@ -49,6 +49,9 @@ class Request extends StatelessWidget {
   }
 }
 
+/// 기본 버튼 위젯 가져오는 함수
+///
+/// - 개인정보처리보호 방침 확인 버튼에 사용됨
 Widget getBasicButton(context) {
   return Container(
       height: 55,
@@ -84,6 +87,9 @@ Widget getBasicButton(context) {
       ));
 }
 
+/// 기본 텍스트 박스 위젯 가져오는 함수
+///
+/// - 개인정보처리보호 방침 텍스트에 사용됨
 Widget getBasicText(
     {required String text,
     double fontsize = 15,
@@ -105,19 +111,20 @@ Widget getBasicText(
               ))));
 }
 
+/// 위치 권한 요청 함수
+///
+/// 위치 권한 허용 시 항상 허용 요청 화면으로 넘어감
 void _requestPermission() async {
-  // await openAppSettings().then((value) {
-  //   Future.delayed(Duration(seconds: 10)).then((value) => startService());
-  // });
-
   if (await Permission.location.request().isGranted) {
     if (await Permission.locationAlways.isGranted == false) {
-      //Geolocator.openLocationSettings();
       await Permission.locationAlways.request();
     }
   }
 }
 
+/// 위치 권한이 확인 함수
+///
+/// return: T/F
 Future<bool> locPermissionCheck() async {
   if (await Permission.locationAlways.isGranted)
     return true;

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:zipsmobile_f/screen/request.dart';
+import 'package:zipsmobile_f/util.dart';
 import 'package:zipsmobile_f/webview/webview.dart';
 
 import '../globals.dart';
@@ -48,6 +49,8 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    f_f();
+
     return WillPopScope(
         child: Container(child: getwebview()
             // Text('test mode'),
