@@ -6,6 +6,7 @@ void main() {
   print(g__version);
   //runApp(MyApp());
   runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
     title: 'load',
     home: Load(),
   ));

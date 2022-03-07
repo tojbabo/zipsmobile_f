@@ -1,8 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:zipsmobile_f/screen/request.dart';
-import 'package:zipsmobile_f/util.dart';
 import 'package:zipsmobile_f/webview/webview.dart';
 
 import '../globals.dart';
@@ -12,6 +11,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -49,10 +49,9 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    f_f();
-
+    //f_f();
     return WillPopScope(
-        child: Container(child: getwebview()
+        child: Container(child: getwebview(context)
             // Text('test mode'),
             // alignment: Alignment.center,
             ),

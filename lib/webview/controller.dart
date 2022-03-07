@@ -1,11 +1,35 @@
-import 'dart:io';
-
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:zipsmobile_f/file.dart';
 import 'package:zipsmobile_f/globals.dart';
 
 int height = 0;
-void controllerSetHandler(InAppWebViewController controller) {
+void controllerSetHandler(
+    InAppWebViewController controller, BuildContext context) {
+  //alert: 서버에서 앱으로 알람
+  controller.addJavaScriptHandler(
+      handlerName: "alert",
+      callback: (arg) {
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                content: Text('애플리케이션 버전이 낮습니다.\n최신 버전으로 업데이트하세요'),
+                actions: <Widget>[
+                  new TextButton(
+                      onPressed: () {
+                        launch(
+                            'https://play.google.com/store/apps/details?id=com.softzen.hansungai');
+                      },
+                      child: new Text('업데이트')),
+                ],
+              );
+            });
+      });
+
   //tempsucc
   controller.addJavaScriptHandler(
       handlerName: "tempsucc",
@@ -22,6 +46,7 @@ void controllerSetHandler(InAppWebViewController controller) {
   controller.addJavaScriptHandler(
       handlerName: "appclose",
       callback: (arg) {
+        CookieManager().deleteAllCookies();
         //exit(0);
         SystemNavigator.pop();
       });
@@ -45,31 +70,15 @@ void controllerSetHandler(InAppWebViewController controller) {
       handlerName: "autologin",
       callback: (arg) {
         String msg = arg.cast<String>()[0];
-
-        if (msg.length < 1)
-          cookieManager.deleteCookie(
-              url: Uri.parse(g__servHttpsAdr), name: 'autologin');
-        else {
-          cookieManager.setCookie(
-              url: Uri.parse(g__servHttpsAdr),
-              name: 'autologin',
-              value: msg,
-              domain: '.zips.ai',
-              isSecure: true);
-        }
-        // else 쿠키에 msg 저장
+        inputData('login', msg);
       });
 
   //logout[구현]
   controller.addJavaScriptHandler(
       handlerName: "logout",
       callback: (arg) {
-        cookieManager.deleteCookie(
-          url: Uri.parse(g__servHttpsAdr),
-          name: 'autologin',
-          domain: '.zips.ai',
-        );
-        //쿠키에 페일 저장
+        CookieManager().deleteAllCookies();
+        removeData('login');
       });
 
   //getlastinfo[구현]: info 리턴
