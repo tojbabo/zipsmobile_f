@@ -1,45 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:zipsmobile_f/file.dart';
-import 'package:zipsmobile_f/globals.dart';
+import 'package:zipsai_mobile/service/service.dart';
+import 'package:zipsai_mobile/util/file.dart';
+import 'package:zipsai_mobile/util/globals.dart';
 
 int height = 0;
 void controllerSetHandler(
     InAppWebViewController controller, BuildContext context) {
   //alert: 서버에서 앱으로 알람
   controller.addJavaScriptHandler(
-      handlerName: "alert",
+      handlerName: "alerts",
       callback: (arg) {
         showDialog(
             context: context,
             barrierDismissible: false,
             builder: (BuildContext context) {
               return AlertDialog(
-                content: Text('애플리케이션 버전이 낮습니다.\n최신 버전으로 업데이트하세요'),
+                content: const Text('애플리케이션 버전이 낮습니다.\n최신 버전으로 업데이트하세요'),
                 actions: <Widget>[
-                  new TextButton(
+                  TextButton(
                       onPressed: () {
                         launch(
-                            'https://play.google.com/store/apps/details?id=com.softzen.hansungai');
+                            'https://play.google.com/store/apps/details?id=com.hansung.zipsai');
                       },
-                      child: new Text('업데이트')),
+                      child: const Text('업데이트')),
                 ],
               );
             });
       });
 
-  //tempsucc
   controller.addJavaScriptHandler(
-      handlerName: "tempsucc",
+      handlerName: "URL",
       callback: (arg) {
-        var temp = arg.cast<String>()[0];
-        if (temp == '0') {
-          // Toast 설정을 완료했습니다.
-        } else {
-          // Toast 설정중 오류 발생
-        }
+        var msg = arg.cast<String>()[0];
+        launch(msg);
+      });
+
+  //toast: 서버 메시지 toast로 뿌림
+  controller.addJavaScriptHandler(
+      handlerName: "toast",
+      callback: (arg) {
+        var msg = arg.cast<String>()[0];
+        Fluttertoast.showToast(msg: msg);
       });
 
   //appclose [구현]
@@ -48,52 +53,39 @@ void controllerSetHandler(
       callback: (arg) {
         CookieManager().deleteAllCookies();
         //exit(0);
+        Navigator.of(context).pop(true);
         SystemNavigator.pop();
+        //exit(0);
       });
 
-  //webheight[구현]: 웹 기장 받아서 저장
-  controller.addJavaScriptHandler(
-      handlerName: "webheight",
-      callback: (arg) {
-        height = arg.cast<int>()[0];
-      });
-
-  //appheight[구현]: 저장한 웹 기장 반환
-  controller.addJavaScriptHandler(
-      handlerName: "appheight",
-      callback: (arg) {
-        return height;
-      });
-
-  //savelogin[구현]: 자동로그인 설정
+  //autologin[구현]: 자동로그인 설정
   controller.addJavaScriptHandler(
       handlerName: "autologin",
-      callback: (arg) {
-        String msg = arg.cast<String>()[0];
-        inputData('login', msg);
+      callback: (arg) async {
+        bool flag = arg.cast<bool>()[0];
+        //print('flag is : $flag');
+        if (flag) {
+          inputData(LOGININFO, '$id,,$pw');
+        } else {
+          removeData(LOGININFO);
+        }
       });
 
-  //logout[구현]
+  //logininfo[적용 중]: 로그인 정보 가져옴
   controller.addJavaScriptHandler(
-      handlerName: "logout",
+      handlerName: 'logininfo',
       callback: (arg) {
-        CookieManager().deleteAllCookies();
-        removeData('login');
+        String param = arg.cast<String>()[0];
+        var datas = param.split(',');
+        id = datas[0];
+        pw = datas[1];
       });
 
-  //getlastinfo[구현]: info 리턴
+  //getappinfo[구현]: info 리턴
   controller.addJavaScriptHandler(
       handlerName: "getappinfo",
       callback: (arg) {
-        return g__appinfo;
-      });
-
-  //getlastloc: 최종 위치 전달
-  controller.addJavaScriptHandler(
-      handlerName: "getlastloc",
-      callback: (arg) {
-        //서비스에서 라스트 위치를 얻어옴
-        // 얻어온 위치 리턴
+        return appinfo;
       });
 
   //getdeviceid[구현]: 기기 id 전달
@@ -101,5 +93,76 @@ void controllerSetHandler(
       handlerName: "getdeviceid",
       callback: (arg) {
         return macid;
+      });
+
+  //setsenior[구현]: 노인모드 비/활성화
+  controller.addJavaScriptHandler(
+      handlerName: "senior",
+      callback: (arg) {
+        int flag = arg.cast<int>()[0];
+        inputData(SENIOR, '$flag');
+        //print("save data is : $flag");
+      });
+
+  //webprint: 서버에서 출력되는내용 확인 디버깅용
+  controller.addJavaScriptHandler(
+      handlerName: "webprint",
+      callback: (arg) {
+        String msg = arg.cast<String>()[0];
+        print('console.log: $msg');
+      });
+
+  ///
+  ///서비스 관련부
+  ///
+
+  //servicestate: 서버로 서비스 관련 상태값 전달
+  controller.addJavaScriptHandler(
+      handlerName: "servicestate",
+      callback: (arg) async {
+        var res = "${(await isrunService()) ? 1 : 0}"
+            ",$servEnable"
+            ",$servAutoRun";
+
+        print(res);
+        return res;
+      });
+
+  //startservice: 서버에서 기기로 서비스 실행
+  controller.addJavaScriptHandler(
+      handlerName: "startservice",
+      callback: (arg) async {
+        return await startService();
+      });
+
+  //getlastloc: 최종 위치 전달
+  controller.addJavaScriptHandler(
+      handlerName: "lastLocation",
+      callback: (arg) async {
+        var result = await getNowLocation();
+        return result;
+        //print("receive data from server $location");
+      });
+
+  //isrunservice: 서버에서 기기로 서비스 실행중인지 파악
+  controller.addJavaScriptHandler(
+      handlerName: "isrunservice",
+      callback: (arg) async {
+        var v = await isrunService();
+        return v;
+      });
+
+  //dolocationset: 기기에서 location setting 실행
+  controller.addJavaScriptHandler(
+      handlerName: "dolocationset",
+      callback: (arg) {
+        settingService();
+      });
+
+  //stopservice: 서버에서 기기로 서비스 종료`
+  controller.addJavaScriptHandler(
+      handlerName: "stopservice",
+      callback: (arg) {
+        stopService();
       });
 }

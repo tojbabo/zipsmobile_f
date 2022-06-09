@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:zipsmobile_f/screen/request.dart';
-import 'package:zipsmobile_f/webview/webview.dart';
+import 'package:zipsai_mobile/screen/request.dart';
+import 'package:zipsai_mobile/util/file.dart';
+import 'package:zipsai_mobile/util/globals.dart';
+import 'package:zipsai_mobile/webview/webview.dart';
+import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 
-import '../globals.dart';
-import '../service.dart';
+import '../service/service.dart';
 
 class MainApp extends StatelessWidget {
   @override
@@ -35,31 +35,31 @@ class _MainPageState extends State<MainPage> {
   void initState() {
     super.initState();
 
-    locPermissionCheck().then((value) => (value) ? startService() : {});
-  }
+    locPermissionCheck().then((value) {
+      if (value == true) {
+        servEnable = 1;
+        servAutoRun = 1;
 
-  final MethodChannel channel = new MethodChannel('app.zips.ai/channel');
-  Future<void> clcik() async {
-    try {
-      await channel.invokeMethod('service', {"macid": macid});
-    } catch (e) {
-      print("err : $e");
-    }
+        // if (getData(AUTORUNSERV) == '1') {
+        //   //startService();
+        // }
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    //f_f();
-    return WillPopScope(
-        child: Container(child: getwebview(context)
-            // Text('test mode'),
-            // alignment: Alignment.center,
-            ),
-        onWillPop: () {
-          setState(() {
-            closepop();
-          });
-          return Future(() => false);
-        });
+    return WithForegroundTask(
+        child: WillPopScope(
+            child: Container(
+                padding:
+                    EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+                child: getwebview(context)),
+            onWillPop: () {
+              setState(() {
+                closepop();
+              });
+              return Future(() => false);
+            }));
   }
 }

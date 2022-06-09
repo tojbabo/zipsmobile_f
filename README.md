@@ -1,4 +1,4 @@
-# zipsmobile_f
+# zipsai_mobile
 
 A new Flutter project.
 
