@@ -4,6 +4,9 @@ import 'package:permission_handler/permission_handler.dart';
 import 'main.dart';
 
 class Request extends StatelessWidget {
+  bool isReLoad;
+  Request(bool this.isReLoad);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -45,7 +48,7 @@ class Request extends StatelessWidget {
                               "위치 정보를 활용한 이동패턴 분석 기능은 필수적이지 않으며 동의하지 않음으로 서비스를 제공받지 않을 수 있습니다."),
                     ],
                   )),
-                  getBasicButton(context),
+                  getBasicButton(context, isReLoad),
                 ],
               )),
           onWillPop: () {
@@ -60,7 +63,7 @@ class Request extends StatelessWidget {
 /// 기본 버튼 위젯 가져오는 함수
 ///
 /// - 개인정보처리보호 방침 확인 버튼에 사용됨
-Widget getBasicButton(context) {
+Widget getBasicButton(context, isreload) {
   return Container(
       height: 55,
       color: Colors.grey,
@@ -76,11 +79,14 @@ Widget getBasicButton(context) {
                         child: TextButton(
                           onPressed: () {
                             _requestPermission();
-                            //Navigator.pop(context);
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => MainApp()));
+                            if (isreload) {
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => MainApp()));
+                            } else {
+                              Navigator.pop(context);
+                            }
                           },
                           child: getBasicText(
                               text: "수락", textAlign: TextAlign.center),
@@ -89,13 +95,17 @@ Widget getBasicButton(context) {
                 child: SizedBox(
                     height: double.infinity,
                     child: TextButton(
-                        onPressed: () => {
-                              // Navigator.pop(context),
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => MainApp()))
-                            },
+                        onPressed: () {
+                          print('is reload is: $isreload');
+                          if (isreload) {
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => MainApp()));
+                          } else {
+                            Navigator.pop(context);
+                          }
+                        },
                         child: getBasicText(
                             text: "취소", textAlign: TextAlign.center)))),
           ],

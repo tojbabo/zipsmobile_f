@@ -53,12 +53,12 @@ String getQueryBody() {
     loginfo = "&id=$id&pw=$pass";
   }
   // 서비스가 실행 중인지 확인
-  //var servon = "&servon=$servEnable";
+  var servon = "&servon=$servEnable";
   // 서비스가 실행 가능한지 확인
-  //var servenable = "servenable=$servEnable";
+  var servenable = "servenable=$servEnable";
 
-  //var result = "$appver&$senior&$servon&$servenable$loginfo";
-  var result = "$appver&$senior$loginfo";
+  var result = "$appver&$senior&$servon&$servenable$loginfo";
+  //var result = "$appver&$senior$loginfo";
 
   return result;
 }

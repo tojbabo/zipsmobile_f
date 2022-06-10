@@ -1,4 +1,4 @@
-const version = "1.3.3";
+const version = "1.3.4";
 
 //const g__servIp = 'main.zips.ai';
 const servIp = 'dev.zips.ai';

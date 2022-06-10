@@ -33,7 +33,7 @@ class Load extends StatelessWidget {
       /// 위치 권한 요청 화면 출력
       if (flag) {
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => Request()));
+            context, MaterialPageRoute(builder: (context) => Request(true)));
       } else {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => MainApp()));

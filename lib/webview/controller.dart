@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:zipsai_mobile/screen/request.dart';
 import 'package:zipsai_mobile/service/service.dart';
 import 'package:zipsai_mobile/util/file.dart';
 import 'package:zipsai_mobile/util/globals.dart';
@@ -36,6 +37,7 @@ void controllerSetHandler(
       handlerName: "URL",
       callback: (arg) {
         var msg = arg.cast<String>()[0];
+        //print(msg);
         launch(msg);
       });
 
@@ -123,8 +125,6 @@ void controllerSetHandler(
         var res = "${(await isrunService()) ? 1 : 0}"
             ",$servEnable"
             ",$servAutoRun";
-
-        print(res);
         return res;
       });
 
@@ -164,5 +164,15 @@ void controllerSetHandler(
       handlerName: "stopservice",
       callback: (arg) {
         stopService();
+      });
+
+  //servreq: 서버로 서비스 관련 상태값 전달
+  controller.addJavaScriptHandler(
+      handlerName: "servreq",
+      callback: (arg) {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => Request(false)));
+        //requestPermission();
+        //print("herer run");
       });
 }
