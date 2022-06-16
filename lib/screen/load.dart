@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zipsai_mobile/screen/request.dart';
 import 'package:zipsai_mobile/util/file.dart';
 
+import '../service.dart';
 import '../util/globals.dart';
 import 'main.dart';
 
@@ -28,6 +29,16 @@ class Load extends StatelessWidget {
         flag = true;
         inputData(FIRSTLAUNCH, 'good');
       }
+
+      locPermissionCheck().then((value) {
+        if (value == true) {
+          servEnable = 1;
+          servAutoRun = 1;
+
+          // if (getData(AUTORUNSERV) == '1') {
+          // }
+        }
+      });
 
       /// 최초 실행 여부에 따라서
       /// 위치 권한 요청 화면 출력

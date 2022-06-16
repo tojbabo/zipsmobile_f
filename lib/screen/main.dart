@@ -34,17 +34,6 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
-
-    locPermissionCheck().then((value) {
-      if (value == true) {
-        servEnable = 1;
-        servAutoRun = 1;
-
-        // if (getData(AUTORUNSERV) == '1') {
-        //   //startService();
-        // }
-      }
-    });
   }
 
   @override

@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:zipsai_mobile/service/service.dart';
 import 'package:zipsai_mobile/util/file.dart';
 import 'package:zipsai_mobile/webview/controller.dart';
 
@@ -13,6 +14,8 @@ InAppWebViewController? _webViewController;
 
 Widget getwebview(BuildContext context) {
   var body = getQueryBody();
+
+  if (servEnable == 1) startService();
 
   var urlreq = URLRequest(
       url: Uri.parse(servHttpsAdr),

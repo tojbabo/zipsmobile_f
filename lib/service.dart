@@ -7,6 +7,7 @@ final MethodChannel channel = new MethodChannel('app.zips.ai/channel');
 /// android Service를 시작하는 함수
 Future<void> startService() async {
   try {
+    print('start service');
     await channel.invokeMethod('service', {
       "macid": macid,
       "version": g__version,
@@ -15,6 +16,6 @@ Future<void> startService() async {
       "interval": g__interval
     });
   } catch (e) {
-    print("err : $e");
+    print("err is : $e");
   }
 }
