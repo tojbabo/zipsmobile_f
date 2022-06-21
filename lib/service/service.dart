@@ -1,5 +1,4 @@
 import 'package:flutter/services.dart';
-import 'package:zipsai_mobile/screen/request.dart';
 import '../util/globals.dart';
 
 const MethodChannel channel = MethodChannel('zipsai');
