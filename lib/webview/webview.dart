@@ -25,8 +25,40 @@ Widget getwebview(BuildContext context) {
     onWebViewCreated: (InAppWebViewController controller) {
       controllerSetHandler(controller, context);
       _webViewController = controller;
+
+      //print('$body');
+      controller.postUrl(
+        url: Uri.parse(servHttpsAdr), 
+        postData: Uint8List.fromList(utf8.encode(body))
+        );
     },
   );
+  
+  // return 
+  // InAppWebView(
+  //   initialUrlRequest:
+  //     URLRequest(url: Uri.parse("https://inappwebview.dev/")),
+  //     initialOptions: getOptions(),
+  //     onWebViewCreated: (controller) {
+  //       _webViewController = controller;
+  //     },
+  //     onLoadStart: (controller, url) {
+  //     },
+  //     androidOnPermissionRequest: (controller, origin, resources) async {
+  //     },
+  //     shouldOverrideUrlLoading: (controller, navigationAction) async {
+  //     },
+  //     onLoadStop: (controller, url) async {
+  //     },
+  //     onLoadError: (controller, url, code, message) {
+  //     },
+  //     onProgressChanged: (controller, progress) {
+  //     },
+  //     onUpdateVisitedHistory: (controller, url, androidIsReload) {
+  //     },
+  //     onConsoleMessage: (controller, consoleMessage) {
+  //     }
+  //   );
 }
 
 void closepop() {
@@ -40,8 +72,13 @@ String getQueryBody() {
   // 앱 버전
   var appver = "ver=$version";
   // 시니어 모드 확인
-  var senior = "senior=${getData(SENIOR)}";
-  if (senior == "") senior = "0";
+
+  var sentemp = getData(SENIOR);
+  if(sentemp == "") sentemp = "0";
+ 
+
+  var senior = "senior=${sentemp}";
+  
   // 로그인 정보 확인 - 있으면 자동 로그인
   var login_idpw = getData(LOGININFO);
   var loginfo = "";
@@ -59,6 +96,8 @@ String getQueryBody() {
 
   var result = "$appver&$senior&$servon&$servenable$loginfo";
   //var result = "$appver&$senior$loginfo";
+
+  //print(result);
 
   return result;
 }

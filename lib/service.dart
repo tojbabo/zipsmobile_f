@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 
-import 'globals.dart';
+import 'package:zipsai_mobile/util/globals.dart';
 
 final MethodChannel channel = new MethodChannel('app.zips.ai/channel');
 
@@ -9,10 +9,10 @@ Future<void> startService() async {
   try {
     await channel.invokeMethod('service', {
       "macid": macid,
-      "version": g__version,
-      "ip": g__servIp,
-      "port": g__tcpPort,
-      "interval": g__interval
+      "version": version,
+      "ip": servIp,
+      "port": 9999,
+      "interval": interval
     });
   } catch (e) {
     print("err : $e");
