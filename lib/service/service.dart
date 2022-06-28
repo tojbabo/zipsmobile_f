@@ -6,8 +6,9 @@ const MethodChannel channel = MethodChannel('zipsai');
 /// android Service를 시작하는 함수
 Future<bool> startService() async {
   try {
-    channel.invokeMethod('servStart', {"macid": macid, "port": httpsPort}).then(
-        (value) => print('start service: $value'));
+    channel
+        .invokeMethod('servStart', {"macid": "$macid", "port": httpsPort}).then(
+            (value) => print('start service: $value'));
     servOn = 1;
     return true;
   } catch (e) {

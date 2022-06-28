@@ -1,12 +1,111 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:zipsai_mobile/service/service.dart';
+import 'package:zipsai_mobile/util/file.dart';
+import '../screen/request.dart';
+import 'globals.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:zipsai_mobile/screen/request.dart';
-import 'package:zipsai_mobile/service/service.dart';
-import 'package:zipsai_mobile/util/file.dart';
 import 'package:zipsai_mobile/util/globals.dart';
+
+InAppWebViewController? _webViewController;
+InAppWebView? _inAppWebView;
+
+void InitWebView(BuildContext context) {
+  var body = getQueryBody();
+
+  startService();
+
+  var urlreq = URLRequest(
+      url: Uri.parse(servHttpsAdr),
+      method: 'POST',
+      body: Uint8List.fromList(utf8.encode(body)));
+
+  _inAppWebView = InAppWebView(
+    initialUrlRequest: urlreq,
+    initialOptions: getOptions(),
+    onWebViewCreated: (InAppWebViewController controller) {
+      controllerSetHandler(controller, context);
+      _webViewController = controller;
+
+      //print('$body');
+      controller.postUrl(
+          url: Uri.parse(servHttpsAdr),
+          postData: Uint8List.fromList(utf8.encode(body)));
+    },
+  );
+}
+
+Widget? getwebview(BuildContext context) {
+  return _inAppWebView;
+}
+
+void closepop() {
+  //print('test here');
+  // _webViewController?.goBack();
+  _webViewController?.loadUrl(
+      urlRequest: URLRequest(url: Uri.parse("javascript:goback()")));
+}
+
+String getQueryBody() {
+  // 앱 버전
+  var appver = "ver=$version";
+  // 시니어 모드 확인
+
+  var macidquery = "macid=$macid";
+
+  var sentemp = getData(SENIOR);
+  if (sentemp == "") sentemp = "0";
+
+  var senior = "senior=${sentemp}";
+
+  // 로그인 정보 확인 - 있으면 자동 로그인
+  var login_idpw = getData(LOGININFO);
+  var loginfo = "";
+  if (login_idpw != '') {
+    var token = login_idpw.split(',,');
+    var id = token[0];
+    var pass = token[1];
+    //body += "&id=$id&pw=$pass";
+    loginfo = "&id=$id&pw=$pass";
+  }
+  // 서비스가 실행 중인지 확인
+  var servon = "&servon=$servEnable";
+  // 서비스가 실행 가능한지 확인
+  var servenable = "servenable=$servEnable";
+
+  var result = "$appver&$macidquery&$senior&$servon&$servenable$loginfo";
+  //var result = "$appver&$senior$loginfo";
+
+  print(result);
+  //print(result);
+
+  return result;
+}
+
+/// WebView 설정 값
+InAppWebViewGroupOptions _options = InAppWebViewGroupOptions(
+  crossPlatform: InAppWebViewOptions(
+      useShouldOverrideUrlLoading: true,
+      mediaPlaybackRequiresUserGesture: false,
+      supportZoom: false),
+  android: AndroidInAppWebViewOptions(
+    useHybridComposition: true,
+  ),
+  ios: IOSInAppWebViewOptions(
+    allowsInlineMediaPlayback: true,
+  ),
+);
+
+/// WebView 설정 값 가져오는 함수
+InAppWebViewGroupOptions getOptions() {
+  return _options;
+}
 
 int height = 0;
 void controllerSetHandler(

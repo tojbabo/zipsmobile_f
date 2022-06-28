@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zipsai_mobile/screen/request.dart';
 import 'package:zipsai_mobile/util/file.dart';
 import 'package:zipsai_mobile/util/globals.dart';
-import 'package:zipsai_mobile/webview/webview.dart';
+import 'package:zipsai_mobile/util/webview.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 
 import '../service/service.dart';
@@ -34,6 +34,7 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
+    InitWebView(context);
   }
 
   @override

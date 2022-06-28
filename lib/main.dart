@@ -13,6 +13,6 @@ void main() async {
     title: 'load',
 
     /// 화면 구성 모듈 호출
-    home: Load(),
+    home: LoadAPP(),
   ));
 }

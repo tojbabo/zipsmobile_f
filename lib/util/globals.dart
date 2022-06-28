@@ -2,8 +2,8 @@ const version = "1.3.5";
 
 //const g__servIp = 'main.zips.ai';
 const servIp = 'dev.zips.ai';
-const httpPort = 11000;
-const httpsPort = 11009;
+const httpPort = 120000;
+const httpsPort = 10009;
 
 const interval = 30 * 1000;
 const mindist = 10;

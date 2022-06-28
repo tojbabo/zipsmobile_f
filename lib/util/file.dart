@@ -7,11 +7,16 @@ var _filename = "val";
 var _path = "";
 late List<String> _fileData;
 
-void fileInit() {
-  getApplicationDocumentsDirectory().then((res) {
+Future fileInit() async {
+  await getApplicationDocumentsDirectory().then((res) {
     _path = res.path;
     _read();
   });
+}
+
+void DEBUG_file_showDatas() {
+  _read();
+  print(_fileData);
 }
 
 /// 정해진 파일 다 읽어옴
