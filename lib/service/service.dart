@@ -1,10 +1,12 @@
 import 'package:flutter/services.dart';
+import 'package:zipsai_mobile/screen/request.dart';
 import '../util/globals.dart';
 
 const MethodChannel channel = MethodChannel('zipsai');
 
 /// android Service를 시작하는 함수
-Future<bool> startService() async {
+Future<bool> StartService() async {
+  if (await locPermissionCheck() == false) return false;
   try {
     channel
         .invokeMethod('servStart', {"macid": "$macid", "port": httpsPort}).then(
@@ -17,7 +19,7 @@ Future<bool> startService() async {
   }
 }
 
-Future<String> getNowLocation() async {
+Future<String> GetNowLocation() async {
   //print('call now location()');
   try {
     var value = await channel.invokeMethod('getLoca');
@@ -29,7 +31,7 @@ Future<String> getNowLocation() async {
   }
 }
 
-Future<void> settingService() async {
+Future<void> SettingService() async {
   try {
     channel.invokeMethod(
         'servSet', {}).then((value) => print('serv setting change: $value'));
@@ -38,7 +40,7 @@ Future<void> settingService() async {
   }
 }
 
-Future<void> stopService() async {
+Future<void> StopService() async {
   try {
     channel.invokeMethod('servStop', {}).then((value) => print('service stop'));
   } catch (e) {
@@ -46,7 +48,7 @@ Future<void> stopService() async {
   }
 }
 
-Future<bool> isrunService() async {
+Future<bool> IsRunService() async {
   try {
     var value = await channel.invokeMethod('isrun');
     //print('service run check : $value');

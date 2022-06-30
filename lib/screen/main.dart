@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:zipsai_mobile/screen/request.dart';
 import 'package:zipsai_mobile/util/file.dart';
@@ -22,7 +24,7 @@ class MainApp extends StatelessWidget {
 }
 
 class MainPage extends StatefulWidget {
-  MainPage({Key? key, required this.title}) : super(key: key);
+  const MainPage({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
@@ -44,10 +46,10 @@ class _MainPageState extends State<MainPage> {
             child: Container(
                 padding:
                     EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-                child: getwebview(context)),
+                child: Getwebview(context)),
             onWillPop: () {
               setState(() {
-                closepop();
+                ClosePop();
               });
               return Future(() => false);
             }));

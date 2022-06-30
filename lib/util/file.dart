@@ -50,12 +50,12 @@ File get _localFile {
 /// macid를 만드는 함수,
 /// 0~9999 사이의 수에 임의의 소수를 곱하는 방식
 int makeid() {
-  var random = new Random();
+  var random = Random();
   var core = random.nextInt(9999);
   var idx = random.nextInt(9) + 3;
 
   var target = 1;
-  var j;
+  int j;
 
   for (var i = 1; i <= idx;) {
     target++;
@@ -72,7 +72,7 @@ int makeid() {
 /// 기존에 존재하면 변환
 /// 없으면 추가함
 /// return - (t: 추가됨 / f: 변환됨)
-bool inputData(String key, String value) {
+bool SetData(String key, String value) {
   var writedata = '$key:{$value}';
 
   var append = true;
@@ -90,7 +90,7 @@ bool inputData(String key, String value) {
 
 /// 데이터에서 특정 키 읽어옴
 /// 데이터 없으면 공백 반환
-String getData(String key) {
+String GetData(String key) {
   for (var i = 0; i < _fileData.length; i++) {
     var token = _fileData[i].split(':');
     if (token[0] == key) {

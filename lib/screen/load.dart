@@ -26,6 +26,7 @@ class LoadAPP extends StatelessWidget {
 }
 
 class LoadPage extends StatefulWidget {
+  @override
   _LoadPage createState() => _LoadPage();
 }
 
@@ -33,45 +34,56 @@ class _LoadPage extends State<LoadPage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      locPermissionCheck().then((value) {
-        if (value == true) {
-          servEnable = 1;
-          servAutoRun = 1;
+    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) async {
+      // 위치 권한 체크
+      locPermissionCheck();
 
-          // if (getData(AUTORUNSERV) == '1') {
-          // }
-        }
-      });
-
-      /// 파일에서 앱 설정 값 읽어옴
+      // 파일 에서 셋팅 값 읽어옴
       await fileInit();
 
-      /// macid값 읽은 후 값의 여부에 따라서
-      /// macid 새로 생성 혹은 사용
-      var read_macid = getData(MACID);
-      if (read_macid == '') {
+      var readMacid = GetData(MACID);
+      if (readMacid == '') {
         macid = makeid();
-        inputData(MACID, macid.toString());
-      } else
-        macid = int.parse(read_macid);
-
-      /// 최초 실행 여부 판단
-      var flag = false;
-      if (getData(FIRSTLAUNCH) == '') {
-        flag = true;
-        inputData(FIRSTLAUNCH, 'good');
+        SetData(MACID, macid.toString());
+      } else {
+        macid = int.parse(readMacid);
       }
 
-      /// 최초 실행 여부에 따라서
-      /// 위치 권한 요청 화면 출력
-      if (flag) {
+      var idpwtemp = GetData(LOGININFO);
+      if (idpwtemp != '') {
+        var token = idpwtemp.split(',,');
+        id = token[0];
+        pw = token[1];
+      }
+
+      var sentemp = GetData(SENIOR);
+      if (sentemp == "") {
+        SetData(SENIOR, "0");
+      } else {
+        seniormode = int.parse(sentemp);
+      }
+
+      var autotemp = GetData(AUTORUNSERV);
+      if (autotemp == "") {
+        SetData(AUTORUNSERV, "1");
+      } else {
+        servAutoRun = int.parse(autotemp);
+      }
+
+      // 최초 실행 여부 판단
+      // 위치 권한 요청 화면 출력
+      var firsttemp = GetData(FIRSTLAUNCH);
+      if (GetData(FIRSTLAUNCH) == '') {
+        SetData(FIRSTLAUNCH, 'good');
+
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => Request(true)));
       } else {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => MainApp()));
       }
+
+      //  인포,
     });
   }
 

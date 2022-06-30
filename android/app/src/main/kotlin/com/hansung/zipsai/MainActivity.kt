@@ -27,9 +27,9 @@ class MainActivity: FlutterActivity() {
                     if (isServiceRun(MainService::class.java.name)) {
                         result.success("service aleady run")
                     } else {
-                        val macid = call.argument<Int>("macid")
+                        val macid = call.argument<String>("macid")
                         val port = call.argument<Int>("port")
-                        v.id = "$macid"
+                        v.id = macid!!
                         v.port = "$port"
 
                         val intent = Intent(this, MainService::class.java)

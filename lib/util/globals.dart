@@ -1,9 +1,9 @@
-const version = "1.3.5";
+const version = "1.3.6";
 
 //const g__servIp = 'main.zips.ai';
 const servIp = 'dev.zips.ai';
-const httpPort = 120000;
-const httpsPort = 10009;
+const httpPort = 12000;
+const httpsPort = 12009;
 
 const interval = 30 * 1000;
 const mindist = 10;
@@ -19,11 +19,12 @@ const appinfo = "ip:$servIp"
     ",version:$version";
 
 var macid = 999;
-var id;
-var pw;
+var id = '';
+var pw = '';
 var servEnable = 0;
-var servAutoRun = 0;
+var servAutoRun = 1;
 var servOn = 0;
+var seniormode = 0;
 
 // 기기 식별자 - 추후 변경될 예정
 const MACID = 'macid';
