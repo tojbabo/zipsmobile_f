@@ -45,10 +45,6 @@ dev_dependencies:
   fluttertoast:
   # for Request Permission
   permission_handler:
-  # for background locationn
-  # MIT license
-  # https://pub.dev/packages/background_locator
-  background_location:
   # for foreground service
   flutter_foreground_task:
   # for foreground notification

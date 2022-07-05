@@ -31,7 +31,6 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
-    log("hi im herer");
     InitWebView(context);
   }
 

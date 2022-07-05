@@ -56,14 +56,26 @@ class _Location private constructor() {
         manager.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER,
                 v.interval,
-                v.minDistance,
+                0f,
                 gpsListener)
 
         manager.requestLocationUpdates(
                 LocationManager.NETWORK_PROVIDER,
                 v.interval,
-                v.minDistance,
+                0f,
                 networkListener)
+
+//        manager.requestLocationUpdates(
+//            LocationManager.GPS_PROVIDER,
+//            v.interval,
+//            v.minDistance,
+//            gpsListener)
+//
+//        manager.requestLocationUpdates(
+//            LocationManager.NETWORK_PROVIDER,
+//            v.interval,
+//            v.minDistance,
+//            networkListener)
 
 
     }
@@ -104,7 +116,7 @@ class _Location private constructor() {
 //                Log.d(TAG, "$tag, Latitude: $latitude" +
 //                        ", Longitude: $longitude")
                 nowLocation = location
-                if (location.accuracy > v.minAccuracy) return
+                //if (location.accuracy > v.minAccuracy) return
                 if (q.count() > 10) q.poll()
 //                if(location.latitude < 32.8 || location.latitude > 38.8 ) return;
 //                if(location.longitude < 125.5 || location.longitude > 131.9) return;

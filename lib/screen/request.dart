@@ -1,5 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:zipsai_mobile/RAM.dart';
+import 'package:zipsai_mobile/util/etc.dart';
 
 import 'main.dart';
 
@@ -114,6 +118,11 @@ class Request extends StatelessWidget {
                           child: TextButton(
                             onPressed: () async {
                               await _requestPermission();
+                              var res = await LocPermissionCheck();
+                              if (res == true) {
+                                gServAuto = 1;
+                                gServOn = 1;
+                              }
                               if (isreload) {
                                 Navigator.pushReplacement(
                                     context,
@@ -131,7 +140,6 @@ class Request extends StatelessWidget {
                       height: double.infinity,
                       child: TextButton(
                           onPressed: () {
-                            print('is reload is: $isreload');
                             if (isreload) {
                               Navigator.pushReplacement(
                                   context,

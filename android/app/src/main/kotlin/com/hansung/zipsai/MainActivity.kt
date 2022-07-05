@@ -71,6 +71,15 @@ class MainActivity: FlutterActivity() {
         }
 
     }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
     private fun isServiceRun(serviceName: String): Boolean{
         var manager :ActivityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         for(service in manager.getRunningServices(Integer.MAX_VALUE)){
