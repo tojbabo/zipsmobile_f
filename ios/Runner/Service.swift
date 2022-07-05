@@ -32,6 +32,7 @@ class Service :NSObject, CLLocationManagerDelegate{
     
     func ServiceRun(){
         
+        
         locationManager.delegate  = self;
         
         // 백그라운드 로케이션 업데이트를 설정할지
@@ -46,7 +47,8 @@ class Service :NSObject, CLLocationManagerDelegate{
             // Fallback on earlier versions
         }
         // 정확도 설정
-        locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+        locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+        //locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
             
         // 위치 수집 항상 허용 요청
         locationManager.requestAlwaysAuthorization();
@@ -75,8 +77,8 @@ class Service :NSObject, CLLocationManagerDelegate{
         guard s.Start() else{
             return
         }
-        var acc = lastLoc?.horizontalAccuracy
-        if(acc! > 30) {return}
+        //var acc = lastLoc?.horizontalAccuracy
+        //if(acc! > 30) {return}
         
         //print(lastLoc?.horizontalAccuracy)
         s.InputParam(key: "id", val: macid)

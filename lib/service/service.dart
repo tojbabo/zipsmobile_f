@@ -1,17 +1,19 @@
 import 'package:flutter/services.dart';
-import 'package:zipsai_mobile/screen/request.dart';
-import '../util/globals.dart';
+import '../RAM.dart';
+import '../ROM.dart';
+import '../util/etc.dart';
 
 const MethodChannel channel = MethodChannel('zipsai');
 
 /// android Service를 시작하는 함수
 Future<bool> StartService() async {
-  if (await locPermissionCheck() == false) return false;
+  if (await LocPermissionCheck() == false) return false;
   try {
-    channel
-        .invokeMethod('servStart', {"macid": "$macid", "port": httpsPort}).then(
-            (value) => print('start service: $value'));
-    servOn = 1;
+    channel.invokeMethod('servStart', {
+      "macid": "$gMacId",
+      "port": gHttpsPort
+    }).then((value) => print('start service: $value'));
+    gServOn = 1;
     return true;
   } catch (e) {
     print("err : $e");

@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:path_provider/path_provider.dart';
 
@@ -7,7 +6,7 @@ var _filename = "val";
 var _path = "";
 late List<String> _fileData;
 
-Future fileInit() async {
+Future FileInit() async {
   await getApplicationDocumentsDirectory().then((res) {
     _path = res.path;
     _read();
@@ -17,55 +16,6 @@ Future fileInit() async {
 void DEBUG_file_showDatas() {
   _read();
   print(_fileData);
-}
-
-/// 정해진 파일 다 읽어옴
-void _read() {
-  var file = _localFile;
-  try {
-    _fileData = file.readAsLinesSync();
-  } catch (e) {
-    _fileData = <String>[];
-  }
-}
-
-/// 현재 데이터를 저장함
-void _write() {
-  var file = _localFile;
-  var target = '';
-  for (var i = 0; i < _fileData.length; i++) {
-    target += _fileData[i] + '\n';
-  }
-  file.writeAsStringSync(target);
-}
-
-/// 애플리케이션 macid.txt 파일을 가져오는 함수
-///
-/// 앱 저장소에 존재하는 _filename 파일 가져옴
-File get _localFile {
-  final path = _path;
-  return File('$path/$_filename');
-}
-
-/// macid를 만드는 함수,
-/// 0~9999 사이의 수에 임의의 소수를 곱하는 방식
-int makeid() {
-  var random = Random();
-  var core = random.nextInt(9999);
-  var idx = random.nextInt(9) + 3;
-
-  var target = 1;
-  int j;
-
-  for (var i = 1; i <= idx;) {
-    target++;
-    for (j = 2; j <= target; j++) {
-      if (target % j == 0) break;
-    }
-    if (j == target) i++;
-  }
-
-  return core * target;
 }
 
 /// 리스트에 데이터 입력
@@ -102,7 +52,7 @@ String GetData(String key) {
 
 /// 데이터 리스트에서 해당 키 지움
 /// return - (t: 삭제 / f: 해당 키 없음)
-bool removeData(String key) {
+bool RemoveData(String key) {
   for (var i = 0; i < _fileData.length; i++) {
     var token = _fileData[i].split(':');
     if (token[0] != key) continue;
@@ -111,4 +61,32 @@ bool removeData(String key) {
     return true;
   }
   return false;
+}
+
+/// 애플리케이션 macid.txt 파일을 가져오는 함수
+///
+/// 앱 저장소에 존재하는 _filename 파일 가져옴
+File get _localFile {
+  final path = _path;
+  return File('$path/$_filename');
+}
+
+// 정해진 파일 다 읽어옴
+void _read() {
+  var file = _localFile;
+  try {
+    _fileData = file.readAsLinesSync();
+  } catch (e) {
+    _fileData = <String>[];
+  }
+}
+
+/// 현재 데이터를 저장함
+void _write() {
+  var file = _localFile;
+  var target = '';
+  for (var i = 0; i < _fileData.length; i++) {
+    target += _fileData[i] + '\n';
+  }
+  file.writeAsStringSync(target);
 }

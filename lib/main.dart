@@ -1,14 +1,14 @@
-import 'dart:io';
-
+import 'dart:developer';
 import 'package:flutter/material.dart';
-import 'package:zipsai_mobile/util/globals.dart';
 import 'package:zipsai_mobile/screen/load.dart';
 
+import 'ROM.dart';
+
 void main() async {
-  print(version);
+  log(version);
   //runApp(MyApp());
 
-  runApp(MaterialApp(
+  runApp(const MaterialApp(
     debugShowCheckedModeBanner: false,
     title: 'load',
 

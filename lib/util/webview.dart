@@ -6,16 +6,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:zipsai_mobile/service/service.dart';
 import 'package:zipsai_mobile/util/file.dart';
+import '../ROM.dart';
 import '../screen/request.dart';
-import 'globals.dart';
+import '../RAM.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:zipsai_mobile/screen/request.dart';
-import 'package:zipsai_mobile/util/globals.dart';
+import 'package:zipsai_mobile/RAM.dart';
+
+import 'etc.dart';
 
 InAppWebViewController? _webViewController;
 InAppWebView? _inAppWebView;
+
+/// WebView 설정 값
+InAppWebViewGroupOptions _options = InAppWebViewGroupOptions(
+  crossPlatform: InAppWebViewOptions(
+      useShouldOverrideUrlLoading: true,
+      mediaPlaybackRequiresUserGesture: false,
+      supportZoom: false),
+  android: AndroidInAppWebViewOptions(
+    useHybridComposition: true,
+  ),
+  ios: IOSInAppWebViewOptions(
+    allowsInlineMediaPlayback: true,
+  ),
+);
 
 // webview 생성. 초기화
 void InitWebView(BuildContext context) {
@@ -23,19 +40,19 @@ void InitWebView(BuildContext context) {
   //StartService();
 
   var urlreq = URLRequest(
-      url: Uri.parse(servHttpsAdr),
+      url: Uri.parse(gServHttpsAdr),
       method: 'POST',
       body: Uint8List.fromList(utf8.encode(body)));
 
   _inAppWebView = InAppWebView(
     initialUrlRequest: urlreq,
-    initialOptions: GetOptions(),
+    initialOptions: _options,
     onWebViewCreated: (InAppWebViewController controller) {
       _ControllerSetHandler(controller, context);
       _webViewController = controller;
 
       controller.postUrl(
-          url: Uri.parse(servHttpsAdr),
+          url: Uri.parse(gServHttpsAdr),
           postData: Uint8List.fromList(utf8.encode(body)));
     },
   );
@@ -52,36 +69,31 @@ void ClosePop() {
       urlRequest: URLRequest(url: Uri.parse("javascript:goback()")));
 }
 
-/// WebView 설정 값 가져오는 함수
-InAppWebViewGroupOptions GetOptions() {
-  return _options;
-}
-
 // webview 생성 시 post 바디 생성
 String _GetQueryBody() {
   // 앱 버전
   var appver = "ver=$version";
 
   // macid
-  var macidquery = "macid=$macid";
+  var macidquery = "macid=$gMacId";
 
   // 시니어모드
-  var senior = "senior=$seniormode";
+  var senior = "senior=$gSeniroMode";
 
   // 로그인 정보 확인 - 있으면 자동 로그인
   var loginfo = "";
-  if (id != '' && pw != '') {
-    loginfo = "&id=$id&pw=$pw";
+  if (gId != '' && gPw != '') {
+    loginfo = "&id=$gId&pw=$gPw";
   }
 
   // 서비스 권한 확인
-  var servenable = "servenable=$servEnable";
+  var servenable = "servenable=$gServEnable";
 
   // 서비스 실행 여부
-  var servon = "servon=$servOn";
+  var servon = "servon=$gServOn";
 
   // 서비스 자동 실행
-  var servautorun = "autoserv=$servAutoRun";
+  var servautorun = "autoserv=$gServAuto";
 
   var result = "$appver" +
       "&$macidquery" +
@@ -97,20 +109,6 @@ String _GetQueryBody() {
 
   return result;
 }
-
-/// WebView 설정 값
-InAppWebViewGroupOptions _options = InAppWebViewGroupOptions(
-  crossPlatform: InAppWebViewOptions(
-      useShouldOverrideUrlLoading: true,
-      mediaPlaybackRequiresUserGesture: false,
-      supportZoom: false),
-  android: AndroidInAppWebViewOptions(
-    useHybridComposition: true,
-  ),
-  ios: IOSInAppWebViewOptions(
-    allowsInlineMediaPlayback: true,
-  ),
-);
 
 // webview 자바 스크립트 핸들러
 void _ControllerSetHandler(
@@ -172,9 +170,9 @@ void _ControllerSetHandler(
         bool flag = arg.cast<bool>()[0];
         //print('flag is : $flag');
         if (flag) {
-          SetData(LOGININFO, '$id,,$pw');
+          SetData(LOGININFO, '$gId,,$gPw');
         } else {
-          removeData(LOGININFO);
+          RemoveData(LOGININFO);
         }
       });
 
@@ -184,22 +182,22 @@ void _ControllerSetHandler(
       callback: (arg) {
         String param = arg.cast<String>()[0];
         var datas = param.split(',');
-        id = datas[0];
-        pw = datas[1];
+        gId = datas[0];
+        gPw = datas[1];
       });
 
   //getappinfo[구현]: info 리턴
   controller.addJavaScriptHandler(
       handlerName: "getappinfo",
       callback: (arg) {
-        return appinfo;
+        return gAppInfo;
       });
 
   //getdeviceid[구현]: 기기 id 전달
   controller.addJavaScriptHandler(
       handlerName: "getdeviceid",
       callback: (arg) {
-        return macid;
+        return gMacId;
       });
 
   //setsenior[구현]: 노인모드 비/활성화
@@ -216,7 +214,7 @@ void _ControllerSetHandler(
       handlerName: "webprint",
       callback: (arg) {
         String msg = arg.cast<String>()[0];
-        print('console.log: $msg');
+        log('console.log: $msg');
       });
 
   ///
@@ -228,8 +226,8 @@ void _ControllerSetHandler(
       handlerName: "servicestate",
       callback: (arg) async {
         var res = "${(await IsRunService()) ? 1 : 0}"
-            ",$servEnable"
-            ",$servAutoRun";
+            ",$gServEnable"
+            ",$gServAuto";
         return res;
       });
 
@@ -275,7 +273,7 @@ void _ControllerSetHandler(
   controller.addJavaScriptHandler(
       handlerName: "servreq",
       callback: (arg) async {
-        var flag = await locPermissionCheck();
+        var flag = await LocPermissionCheck();
         return flag;
       });
 
@@ -284,9 +282,9 @@ void _ControllerSetHandler(
       handlerName: "SwitchServAuto",
       callback: (arg) async {
         int param = int.parse(arg.cast<String>()[0]);
-        servAutoRun = param;
+        gServAuto = param;
 
-        SetData(AUTORUNSERV, '$servAutoRun');
-        return servAutoRun;
+        SetData(AUTORUNSERV, '$gServAuto');
+        return gServAuto;
       });
 }
