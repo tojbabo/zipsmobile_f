@@ -67,10 +67,11 @@ class Request extends StatelessWidget {
   ///
   /// 위치 권한 허용 시 항상 허용 요청 화면으로 넘어감
   Future _requestPermission() async {
+    await Permission.locationAlways.request();
+    //await openAppSettings();
+    return;
     if (await Permission.location.request().isGranted) {
-      if (await Permission.locationAlways.isGranted == false) {
-        await Permission.locationAlways.request();
-      }
+      if (await Permission.locationAlways.isGranted == false) {}
     }
   }
 

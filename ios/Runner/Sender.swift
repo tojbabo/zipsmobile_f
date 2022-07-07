@@ -12,12 +12,12 @@ class Sender{
     private var requestURL: URLRequest?
     private var postString = ""
     private var ip: String
-    private var port: Int
+    public var port: Int
     private var flag = false
     
     init(){
         ip = "https://dev.zips.ai"
-        port = 11009
+        port = 12009
     }
     
     func Connect(){

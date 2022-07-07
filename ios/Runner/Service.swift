@@ -13,7 +13,7 @@ class Service :NSObject, CLLocationManagerDelegate{
     private let locationManager = CLLocationManager();
     private let s = Sender()
     
-    private var isRun : Bool
+    public var isRun : Bool
     
     private var interval : Int
     private var macid : String
@@ -24,14 +24,18 @@ class Service :NSObject, CLLocationManagerDelegate{
         isRun = false
     }
     
-    func Setting(macid:String, interval:Int){
+    func Setting(macid:String, port:Int, interval:Int){
         self.macid = macid
         self.interval = interval
+        s.port = port
         
     }
     
     func ServiceRun(){
         
+        if(isRun){
+            return
+        }
         
         locationManager.delegate  = self;
         
@@ -47,16 +51,13 @@ class Service :NSObject, CLLocationManagerDelegate{
             // Fallback on earlier versions
         }
         // 정확도 설정
-        locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+        locationManager.desiredAccuracy = kCLLocationAccuracyThreeKilometers
         //locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
             
         // 위치 수집 항상 허용 요청
         locationManager.requestAlwaysAuthorization();
         
         
-        if(isRun){
-            return
-        }
         
         s.Connect()
         
