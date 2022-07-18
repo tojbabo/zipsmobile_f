@@ -148,6 +148,7 @@ void _ControllerSetHandler(
   controller.addJavaScriptHandler(
       handlerName: "toast",
       callback: (arg) {
+        log("call toast");
         var msg = arg.cast<String>()[0];
         Fluttertoast.showToast(msg: msg);
       });
@@ -235,6 +236,7 @@ void _ControllerSetHandler(
   controller.addJavaScriptHandler(
       handlerName: "startservice",
       callback: (arg) async {
+        log("call startService");
         return await StartService();
       });
 

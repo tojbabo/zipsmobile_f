@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:zipsai_mobile/util/webview.dart';
-import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 
 class MainApp extends StatelessWidget {
   @override
@@ -10,9 +9,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData(),
       home: MainPage(title: 'Flutter Demo Home Page'),
     );
   }
@@ -36,17 +33,15 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return WithForegroundTask(
-        child: WillPopScope(
-            child: Container(
-                padding:
-                    EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-                child: Getwebview(context)),
-            onWillPop: () {
-              setState(() {
-                ClosePop();
-              });
-              return Future(() => false);
-            }));
+    return WillPopScope(
+        child: Container(
+            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+            child: Getwebview(context)),
+        onWillPop: () {
+          setState(() {
+            ClosePop();
+          });
+          return Future(() => false);
+        });
   }
 }

@@ -53,29 +53,29 @@ class _Location private constructor() {
         //Log.d(TAG, "mindis: ${v.minDistance}")
         //Log.d(TAG, "minacc: ${v.minAccuracy}")
 
-        manager.requestLocationUpdates(
-                LocationManager.GPS_PROVIDER,
-                v.interval,
-                0f,
-                gpsListener)
-
-        manager.requestLocationUpdates(
-                LocationManager.NETWORK_PROVIDER,
-                v.interval,
-                0f,
-                networkListener)
-
 //        manager.requestLocationUpdates(
-//            LocationManager.GPS_PROVIDER,
-//            v.interval,
-//            v.minDistance,
-//            gpsListener)
+//                LocationManager.GPS_PROVIDER,
+//                0,
+//                0f,
+//                gpsListener)
 //
 //        manager.requestLocationUpdates(
-//            LocationManager.NETWORK_PROVIDER,
-//            v.interval,
-//            v.minDistance,
-//            networkListener)
+//                LocationManager.NETWORK_PROVIDER,
+//                0,
+//                0f,
+//                networkListener)
+
+        manager.requestLocationUpdates(
+            LocationManager.GPS_PROVIDER,
+            v.interval,
+            v.minDistance,
+            gpsListener)
+
+        manager.requestLocationUpdates(
+            LocationManager.NETWORK_PROVIDER,
+            v.interval,
+            v.minDistance,
+            networkListener)
 
 
     }

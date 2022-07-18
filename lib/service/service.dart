@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/services.dart';
 import '../RAM.dart';
 import '../ROM.dart';
@@ -9,16 +11,18 @@ const MethodChannel channel = MethodChannel('zipsai');
 Future<bool> StartService() async {
   if (await LocPermissionCheck() == false) return false;
   try {
-    channel.invokeMethod('servStart', {
-      "macid": "$gMacId",
-      "port": gHttpsPort
-    }).then((value) => print('start service: $value'));
-    gServOn = 1;
+    channel.invokeMethod(
+        'servStart', {"macid": "$gMacId", "port": gHttpsPort}).then((value) {
+      gServOn = 1;
+      print('start service: $value');
+    });
+
     return true;
   } catch (e) {
     print("err : $e");
-    return false;
   }
+  gServOn = 0;
+  return false;
 }
 
 Future<String> GetNowLocation() async {
@@ -53,10 +57,11 @@ Future<void> StopService() async {
 Future<bool> IsRunService() async {
   try {
     var value = await channel.invokeMethod('isrun');
-    //print('service run check : $value');
+    gServOn = (value) ? 1 : 0;
     return value;
   } catch (e) {
     print("err : $e");
-    return false;
   }
+  gServOn = 0;
+  return false;
 }

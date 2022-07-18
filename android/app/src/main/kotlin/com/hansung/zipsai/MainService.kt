@@ -28,6 +28,8 @@ class MainService : Service() {
     private lateinit var tcp: _Tcp
     private lateinit var loc: _Location
 
+    private  lateinit var temp: tempLoc
+
     private lateinit var queue: Queue<JSONObject>
 
     override fun onCreate() {
@@ -38,6 +40,9 @@ class MainService : Service() {
         tcp.initialize(queue as LinkedList<JSONObject>,this)
         loc = _Location.getInstance()
         loc.initialize(this, queue as LinkedList<JSONObject>)
+
+        temp = tempLoc.getInstance()
+        temp.initialize(this)
     }
 
     override fun onBind(intent: Intent): IBinder {
@@ -54,6 +59,8 @@ class MainService : Service() {
         tcp.jobdoen()
         loc.jobdoen()
 
+        temp.jobdoen()
+
 
         // 여러 작업들 종료 시키는 
         super.onDestroy()
@@ -66,10 +73,11 @@ class MainService : Service() {
         }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) setNotification()
 
-            var flag = tcp.initSetting()
+            var flag = temp.initSetting()
             if (flag) {
-                tcp.doNetwork()
-                loc.doLocation()
+                temp.doLocation()
+                //tcp.doNetwork()
+                //loc.doLocation()
             } else {
                 stopSelf()
             }

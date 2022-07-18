@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import '../RAM.dart';
@@ -11,6 +12,7 @@ Future<bool> LocPermissionCheck() async {
     gServEnable = 1;
     return true;
   } else {
+    gServEnable = 0;
     return false;
   }
 }
@@ -34,4 +36,17 @@ int MakeId() {
   }
 
   return core * target;
+}
+
+Future<bool> internetcheck() async {
+  try {
+    var result = await InternetAddress.lookup("google.com");
+    if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+      print("connt good");
+      return true;
+    }
+  } on SocketException catch (_) {
+    print("internet x");
+  }
+  return false;
 }
