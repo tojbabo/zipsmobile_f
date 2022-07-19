@@ -53,7 +53,9 @@ class Service :NSObject, CLLocationManagerDelegate{
         // 정확도 설정
         locationManager.desiredAccuracy = kCLLocationAccuracyThreeKilometers
         //locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-            
+        
+        locationManager.distanceFilter = 10.0
+        
         // 위치 수집 항상 허용 요청
         locationManager.requestAlwaysAuthorization();
         
