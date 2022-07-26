@@ -27,6 +27,4 @@ class _Val private constructor(){
     var interval: Long = 30*1000
     var minDistance: Float = 5.0f
     var minAccuracy: Int = 20
-
-
 }

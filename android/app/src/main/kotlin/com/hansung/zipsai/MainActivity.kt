@@ -42,30 +42,33 @@ class MainActivity: FlutterActivity() {
                     if (isServiceRun(MainService::class.java.name)) {
                         val it = Intent(context,MainService::class.java)
                         context?.stopService(it)
+                        result.success("stop successly")
                     } else result.success("not service run")
                 }
                 "isrun" -> {
                     if (isServiceRun(MainService::class.java.name)) result.success(true)
                     else result.success(false)
                 }
-                "servSet" -> {
-                    if (isServiceRun(MainService::class.java.name)) {
-                        var net = _Tcp.getInstance()
-                        var loc = _Location.getInstance()
-                        var res = net.initSetting()
-
-                        loc.restart()
-                    } else result.success("not service run")
-                }
                 "getLoca" -> {
                     if (isServiceRun(MainService::class.java.name)) {
-                        var loc = _Location.getInstance()
-                        var now = loc.getNowLocation()
+                        var temp = _Locationer.getInstance()
+                        var now = temp.getNowLocation()
+                        result.success(now.toString())
+                        //var loc = _Location.getInstance()
+                        //var now = loc.getNowLocation()
 
                         //Log.d(TAG, "${now.toString()}")
 
-                        result.success(now.toString())
+                        //result.success(now.toString())
                     } else result.success("not service run")
+                }
+                "getSetting" -> {
+                    if (isServiceRun(MainService::class.java.name)) {
+
+                        result.success("${v.interval},${v.minDistance},${v.minAccuracy}")
+                    } else {
+                        result.success("no")
+                    }
                 }
             }
         }

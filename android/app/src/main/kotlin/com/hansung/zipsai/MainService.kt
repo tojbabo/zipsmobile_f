@@ -1,23 +1,15 @@
 package com.hansung.zipsai
 
-import android.annotation.SuppressLint
 import android.app.*
 import android.content.Context
 import android.content.Intent
-import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
 import android.os.Build
 import android.os.IBinder
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import io.flutter.Log
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.json.JSONObject
-import java.io.*
-import java.util.*
 
 class MainService : Service() {
     private val NOTIFICATION_ID = 1
@@ -25,23 +17,13 @@ class MainService : Service() {
     private val CHANNEL_ID = "ZABS"
     private val TAG = "kotlin debug"
 
-    private lateinit var tcp: _Tcp
-    private lateinit var loc: _Location
+    private  lateinit var temp: _Locationer
 
-    private  lateinit var temp: tempLoc
-
-    private lateinit var queue: Queue<JSONObject>
 
     override fun onCreate() {
         super.onCreate()
-        queue = LinkedList()
 
-        tcp = _Tcp.getInstance()
-        tcp.initialize(queue as LinkedList<JSONObject>,this)
-        loc = _Location.getInstance()
-        loc.initialize(this, queue as LinkedList<JSONObject>)
-
-        temp = tempLoc.getInstance()
+        temp = _Locationer.getInstance()
         temp.initialize(this)
     }
 
@@ -55,12 +37,7 @@ class MainService : Service() {
         var manager = getSystemService(NOTIFICATION_SERVICE)  as NotificationManager
         manager.cancelAll()
 
-
-        tcp.jobdoen()
-        loc.jobdoen()
-
         temp.jobdoen()
-
 
         // 여러 작업들 종료 시키는 
         super.onDestroy()

@@ -9,7 +9,6 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
@@ -25,12 +24,12 @@ import javax.net.ssl.HttpsURLConnection
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManagerFactory
 
-class tempLoc private constructor() {
+class _Locationer private constructor() {
     companion object {
-        private var instance: tempLoc? = null
-        fun getInstance(): tempLoc =
+        private var instance: _Locationer? = null
+        fun getInstance(): _Locationer =
             instance ?: synchronized(this) {
-                instance ?: tempLoc().also {
+                instance ?: _Locationer().also {
                     instance = it
                 }
             }
@@ -44,7 +43,6 @@ class tempLoc private constructor() {
     private lateinit var manager:LocationManager
 
     private var v = _Val.getInstance()
-    // tete
     private var https = "https://dev.zips.ai"
     private var http = "http://dev.zips.ai"
     private var port = "10000"
@@ -63,7 +61,49 @@ class tempLoc private constructor() {
         this.sslContext = sslSet()
         this.port = v.port
         this.urls = https + ":${this.port}"
+    }
+    fun initSetting(): Boolean {
+        var flag = false
+        var url = URL("${urls}/data/location/setting")
+        var job1 = GlobalScope.launch {
+            val tempConn = url.openConnection() as HttpsURLConnection
+            tempConn.sslSocketFactory = sslContext.socketFactory
+            tempConn.connectTimeout = 1000
+            tempConn.readTimeout = 1000
+            tempConn.requestMethod = "GET"
 
+            try {
+                val res = tempConn.responseCode
+                //Log.d(TAG, "res: $res")
+
+                if (res == HttpURLConnection.HTTP_OK) {
+                    val text: String =
+                        tempConn.inputStream.bufferedReader().use(BufferedReader::readText)
+                    var setvalue = JSONObject(text)
+                    Log.d(TAG,text)
+                    var distance: Float = setvalue.getString("distance").toFloat()
+                    var accuracy: Int = setvalue.getInt("accuracy")
+                    var interval: Long = setvalue.getLong("interval")
+
+                    v.interval = interval
+                    v.minAccuracy = accuracy
+                    v.minDistance = distance
+                    flag = true
+
+
+                    android.util.Log.d(TAG, "$text")
+                }
+
+
+            } catch (e: Exception) {
+                android.util.Log.d(TAG, "init time out")
+            }
+            //android.util.Log.d(TAG, "setting done")
+        }
+        runBlocking {
+            job1.join()
+        }
+        return flag
     }
 
     // location 수집 관련 함수
@@ -71,17 +111,15 @@ class tempLoc private constructor() {
     fun doLocation() {
         manager.requestLocationUpdates(
             LocationManager.GPS_PROVIDER,
-            0,
-            0f,
+            v.interval,
+            v.minDistance,
             gpsListener)
 
         manager.requestLocationUpdates(
             LocationManager.NETWORK_PROVIDER,
-            0,
-            0f,
+            v.interval,
+            v.minDistance,
             networkListener)
-
-
     }
     @RequiresApi(Build.VERSION_CODES.R)
     @SuppressLint("MissingPermission")
@@ -111,48 +149,6 @@ class tempLoc private constructor() {
         doLocation()
 
     }
-    fun initSetting(): Boolean {
-        var flag = false
-        var url = URL("${urls}/data/location/setting")
-        var job1 = GlobalScope.launch {
-            val tempConn = url.openConnection() as HttpsURLConnection
-            tempConn.sslSocketFactory = sslContext.socketFactory
-            tempConn.connectTimeout = 1000
-            tempConn.readTimeout = 1000
-            tempConn.requestMethod = "GET"
-
-            try {
-                val res = tempConn.responseCode
-                //Log.d(TAG, "res: $res")
-
-                if (res == HttpURLConnection.HTTP_OK) {
-                    val text: String =
-                        tempConn.inputStream.bufferedReader().use(BufferedReader::readText)
-                    android.util.Log.d(TAG, "$text")
-                    var setvalue = JSONObject(text)
-                    var distance: Float = setvalue.getString("distance").toFloat()
-                    var accuracy: Int = setvalue.getInt("accuracy")
-                    var interval: Long = setvalue.getLong("interval")
-
-                    v.interval = interval
-                    v.minAccuracy = accuracy
-                    v.minDistance = distance
-                    flag = true
-
-
-                }
-
-
-            } catch (e: Exception) {
-                android.util.Log.d(TAG, "init time out")
-            }
-            //android.util.Log.d(TAG, "setting done")
-        }
-        runBlocking {
-            job1.join()
-        }
-        return flag
-    }
 
 
     private fun getListener(tag: String): LocationListener {
@@ -165,13 +161,16 @@ class tempLoc private constructor() {
                 }
 //                val latitude = location.latitude
 //                val longitude = location.longitude
-//                Log.d(TAG, "$tag, Latitude: $latitude" +
-//                        ", Longitude: $longitude")
                 nowLocation = location
-                //if (location.accuracy > v.minAccuracy) return
-//               if(location.latitude < 32.8 || location.latitude > 38.8 ) return;
-//               if(location.longitude < 125.5 || location.longitude > 131.9) return;
+                if (location.accuracy > v.minAccuracy) return
 
+
+                if(location.latitude < 32.8 || location.latitude > 38.8 ) return;
+                if(location.longitude < 125.5 || location.longitude > 131.9) return;
+
+               //Log.d(TAG, "$tag, Latitude: ${location.latitude}, Longitude: ${location.longitude}")
+
+                
 
                 val j = JSONObject()
 
@@ -183,6 +182,8 @@ class tempLoc private constructor() {
                 j.put("tag", tag)
                 j.put("id", v.id)
 
+
+                //return
 
                 GlobalScope.launch {
                     try {
@@ -254,5 +255,4 @@ class tempLoc private constructor() {
         }
         return sslcontext
     }
-
 }

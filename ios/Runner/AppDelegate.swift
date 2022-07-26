@@ -32,9 +32,6 @@ import CoreLocation
               print(s.isRun)
               result(s.isRun)
           }
-          else if(call.method == "servSet"){
-              
-          }
           else if(call.method == " getLoca"){
               
           }

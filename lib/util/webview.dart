@@ -190,8 +190,21 @@ void _ControllerSetHandler(
   //getappinfo[구현]: info 리턴
   controller.addJavaScriptHandler(
       handlerName: "getappinfo",
-      callback: (arg) {
-        return gAppInfo;
+      callback: (arg) async {
+        var data = await GetSettingData();
+        var temp = gAppInfo;
+        if (data == "no") {
+          temp += ",interval: "
+              ",mindistance: "
+              ",minaccuracy: ";
+        } else {
+          var datas = data.split(',');
+          temp += ",interval: ${datas[0]}"
+              ",mindistance: ${datas[1]}"
+              ",minaccuracy: ${datas[2]}";
+        }
+
+        return temp;
       });
 
   //getdeviceid[구현]: 기기 id 전달
@@ -255,13 +268,6 @@ void _ControllerSetHandler(
       callback: (arg) async {
         var v = await IsRunService();
         return v;
-      });
-
-  //dolocationset: 기기에서 location setting 실행
-  controller.addJavaScriptHandler(
-      handlerName: "dolocationset",
-      callback: (arg) {
-        SettingService();
       });
 
   //stopservice: 서버에서 기기로 서비스 종료`

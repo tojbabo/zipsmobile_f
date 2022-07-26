@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../RAM.dart';
 import '../ROM.dart';
 import '../util/etc.dart';
@@ -15,6 +16,7 @@ Future<bool> StartService() async {
         'servStart', {"macid": "$gMacId", "port": gHttpsPort}).then((value) {
       gServOn = 1;
       print('start service: $value');
+      Fluttertoast.showToast(msg: 'serv started: $value');
     });
 
     return true;
@@ -37,18 +39,10 @@ Future<String> GetNowLocation() async {
   }
 }
 
-Future<void> SettingService() async {
-  try {
-    channel.invokeMethod(
-        'servSet', {}).then((value) => print('serv setting change: $value'));
-  } catch (e) {
-    print("err : $e");
-  }
-}
-
 Future<void> StopService() async {
   try {
-    channel.invokeMethod('servStop', {}).then((value) => print('service stop'));
+    channel.invokeMethod(
+        'servStop', {}).then((value) => log('service stop - $value'));
   } catch (e) {
     print("err : $e");
   }
@@ -64,4 +58,17 @@ Future<bool> IsRunService() async {
   }
   gServOn = 0;
   return false;
+}
+
+Future<String> GetSettingData() async {
+  //print('call now location()');
+  try {
+    var value = await channel.invokeMethod('getSetting');
+    //log(value);
+    return value;
+    //print("get now is : $value");
+  } catch (e) {
+    print("err : $e");
+    return "";
+  }
 }

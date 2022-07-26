@@ -4,5 +4,6 @@
     ],
     "dart.vmAdditionalArgs": [
         "--no-sound-null-safety"
-    ]
+    ],
+    "java.configuration.updateBuildConfiguration": "interactive"
 }

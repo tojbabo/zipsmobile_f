@@ -1,21 +1,15 @@
-const version = "1.3.7";
+const version = "1.3.8";
 
 //const g__servIp = 'main.zips.ai';
 const gServerIp = 'dev.zips.ai';
 const gHttpPort = 12000;
 const gHttpsPort = 12009;
 
-const gInterval = 30 * 1000;
-const gMinDist = 10;
-const gMinAcc = 15;
 const gServHttpAdr = 'http://$gServerIp:$gHttpPort/';
 const gServHttpsAdr = 'https://$gServerIp:$gHttpsPort/';
 
 const gAppInfo = "ip:$gServerIp"
     ",port:$gHttpsPort"
-    ",interval:$gInterval"
-    ",mindistance:$gMinDist"
-    ",minaccuracy:$gMinAcc"
     ",version:$version";
 
 // 기기 식별자 - 추후 변경될 예정
