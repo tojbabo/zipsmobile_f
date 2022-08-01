@@ -47,6 +47,9 @@ void InitWebView(BuildContext context) {
   _inAppWebView = InAppWebView(
     initialUrlRequest: urlreq,
     initialOptions: _options,
+    onConsoleMessage: (controller, msg) {
+      log('[console] $msg');
+    },
     onWebViewCreated: (InAppWebViewController controller) {
       _ControllerSetHandler(controller, context);
       _webViewController = controller;
@@ -78,7 +81,7 @@ String _GetQueryBody() {
   var macidquery = "macid=$gMacId";
 
   // 시니어모드
-  var senior = "senior=$gSeniroMode";
+  var senior = "senior=$gSeniorMode";
 
   // 로그인 정보 확인 - 있으면 자동 로그인
   var loginfo = "";
@@ -98,9 +101,9 @@ String _GetQueryBody() {
   var result = "$appver" +
       "&$macidquery" +
       "&$senior" +
-      "&$servon" +
-      "&$servenable" +
-      "&$servautorun" +
+//      "&$servon" +
+//      "&$servenable" +
+//      "&$servautorun" +
       "$loginfo";
   //var result = "$appver&$senior$loginfo";
 
@@ -164,12 +167,13 @@ void _ControllerSetHandler(
         //exit(0);
       });
 
-  //autologin[구현]: 자동로그인 설정
+  // 자동로그인 설정
+  const _AUTOLOGIN = "autologin";
   controller.addJavaScriptHandler(
-      handlerName: "autologin",
+      handlerName: _AUTOLOGIN,
       callback: (arg) async {
         bool flag = arg.cast<bool>()[0];
-        //print('flag is : $flag');
+        log('[$_AUTOLOGIN] mode: $flag');
         if (flag) {
           SetData(LOGININFO, '$gId,,$gPw');
         } else {
@@ -214,34 +218,34 @@ void _ControllerSetHandler(
         return gMacId;
       });
 
-  //setsenior[구현]: 노인모드 비/활성화
+  // 노인모드 비/활성화
+  const _SENIORMODE = "senior";
   controller.addJavaScriptHandler(
-      handlerName: "senior",
+      handlerName: _SENIORMODE,
       callback: (arg) {
         int flag = arg.cast<int>()[0];
         SetData(SENIOR, '$flag');
-        //print("save data is : $flag");
+        log('[$_SENIORMODE] mode: $flag');
       });
 
-  //webprint: 서버에서 출력되는내용 확인 디버깅용
-  controller.addJavaScriptHandler(
-      handlerName: "webprint",
-      callback: (arg) {
-        String msg = arg.cast<String>()[0];
-        log('console.log: $msg');
-      });
-
-  ///
   ///서비스 관련부
-  ///
-
-  //servicestate: 서버로 서비스 관련 상태값 전달
+  // 서버로 서비스 관련 상태값 전달
+  const _APPSTATE = "appstate";
   controller.addJavaScriptHandler(
-      handlerName: "servicestate",
+      handlerName: _APPSTATE,
       callback: (arg) async {
-        var res = "${(await IsRunService()) ? 1 : 0}"
-            ",$gServEnable"
-            ",$gServAuto";
+        log("[$_APPSTATE] called");
+        await IsRunService();
+
+        var num = 0;
+        if (gId != '') num = 1;
+
+        var res = "$gServEnable"
+            ",$gServAuto"
+            ",$gServOn"
+            ",$gSeniorMode"
+            ",$num";
+
         return res;
       });
 
@@ -249,8 +253,12 @@ void _ControllerSetHandler(
   controller.addJavaScriptHandler(
       handlerName: "startservice",
       callback: (arg) async {
-        log("call startService");
-        return await StartService();
+        int flag = arg.cast<int>()[0];
+        if (flag == 1 || (gServEnable == 1 && gServAuto == 1)) {
+          return await StartService();
+        }
+
+        return 0;
       });
 
   //getlastloc: 최종 위치 전달
@@ -265,8 +273,8 @@ void _ControllerSetHandler(
   //isrunservice: 서버에서 기기로 서비스 실행중인지 파악
   controller.addJavaScriptHandler(
       handlerName: "isrunservice",
-      callback: (arg) async {
-        var v = await IsRunService();
+      callback: (arg) {
+        var v = gServOn;
         return v;
       });
 

@@ -9,22 +9,20 @@ import '../util/etc.dart';
 const MethodChannel channel = MethodChannel('zipsai');
 
 /// android Service를 시작하는 함수
-Future<bool> StartService() async {
-  if (await LocPermissionCheck() == false) return false;
+Future<int> StartService() async {
+  if (await LocPermissionCheck() == false) return 0;
   try {
-    channel.invokeMethod(
-        'servStart', {"macid": "$gMacId", "port": gHttpsPort}).then((value) {
-      gServOn = 1;
-      print('start service: $value');
-      Fluttertoast.showToast(msg: 'serv started: $value');
-    });
+    if (gServOn == 1) return 1;
+    var result = await channel
+        .invokeMethod('servStart', {"macid": "$gMacId", "port": gHttpsPort});
 
-    return true;
+    log('[StartService] good: ($result)');
+    //Fluttertoast.showToast(msg: '서비스를 시작합니다');
+    return 1;
   } catch (e) {
-    print("err : $e");
+    log("[StartService] err : $e");
   }
-  gServOn = 0;
-  return false;
+  return 0;
 }
 
 Future<String> GetNowLocation() async {
@@ -42,22 +40,28 @@ Future<String> GetNowLocation() async {
 Future<void> StopService() async {
   try {
     channel.invokeMethod(
-        'servStop', {}).then((value) => log('service stop - $value'));
+        'servStop', {}).then((value) => log('[StopService] good: ($value)'));
+
+    //Fluttertoast.showToast(msg: '서비스를 종료합니다');
   } catch (e) {
-    print("err : $e");
+    log("[StopService] err : $e");
   }
 }
 
-Future<bool> IsRunService() async {
+Future<void> IsRunService() async {
   try {
     var value = await channel.invokeMethod('isrun');
-    gServOn = (value) ? 1 : 0;
-    return value;
+    log('[IsRunService] service state: $value');
+    if (value) {
+      gServOn = 1;
+    } else {
+      gServOn = 0;
+    }
+    return;
   } catch (e) {
     print("err : $e");
   }
   gServOn = 0;
-  return false;
 }
 
 Future<String> GetSettingData() async {

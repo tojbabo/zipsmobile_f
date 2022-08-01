@@ -67,11 +67,11 @@ class Request extends StatelessWidget {
   ///
   /// 위치 권한 허용 시 항상 허용 요청 화면으로 넘어감
   Future _requestPermission() async {
-    await Permission.locationAlways.request();
-    //await openAppSettings();
-    return;
     if (await Permission.location.request().isGranted) {
-      if (await Permission.locationAlways.isGranted == false) {}
+      if (await Permission.locationAlways.isGranted == false) {
+        await Permission.locationAlways.request();
+        //await openAppSettings();
+      }
     }
   }
 
@@ -110,6 +110,7 @@ class Request extends StatelessWidget {
           alignment: FractionalOffset.bottomCenter,
           child: Row(
             children: <Widget>[
+              // 확인 버튼
               Expanded(
                   child: SizedBox(
                       height: double.infinity,
@@ -120,9 +121,9 @@ class Request extends StatelessWidget {
                             onPressed: () async {
                               await _requestPermission();
                               var res = await LocPermissionCheck();
+                              log('result is: $res');
                               if (res == true) {
                                 gServAuto = 1;
-                                gServOn = 1;
                               }
                               if (isreload) {
                                 Navigator.pushReplacement(
@@ -136,6 +137,7 @@ class Request extends StatelessWidget {
                             child: _GetBasicText(
                                 text: "수락", textAlign: TextAlign.center),
                           )))),
+              // 취소 버튼
               Expanded(
                   child: SizedBox(
                       height: double.infinity,

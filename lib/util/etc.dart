@@ -1,5 +1,6 @@
+import 'dart:developer';
 import 'dart:io';
-import 'dart:math';
+import 'dart:math' as math;
 
 import '../RAM.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -9,9 +10,12 @@ import 'package:permission_handler/permission_handler.dart';
 /// return: T/F
 Future<bool> LocPermissionCheck() async {
   if (await Permission.locationAlways.isGranted) {
+    log('[LocPermissionCheck] true');
     gServEnable = 1;
     return true;
   } else {
+    log('[LocPermissionCheck] false');
+
     gServEnable = 0;
     return false;
   }
@@ -20,7 +24,7 @@ Future<bool> LocPermissionCheck() async {
 /// macid를 만드는 함수,
 /// 0~9999 사이의 수에 임의의 소수를 곱하는 방식
 int MakeId() {
-  var random = Random();
+  var random = math.Random();
   var core = random.nextInt(9999);
   var idx = random.nextInt(9) + 3;
 
@@ -42,11 +46,11 @@ Future<bool> internetcheck() async {
   try {
     var result = await InternetAddress.lookup("google.com");
     if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-      print("connt good");
+      log("[internetcheck] good");
       return true;
     }
   } on SocketException catch (_) {
-    print("internet x");
+    log("[internetcheck] bad");
   }
   return false;
 }

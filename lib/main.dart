@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:zipsai_mobile/screen/load.dart';
+import 'package:zipsai_mobile/service/receiver.dart';
 
 import 'ROM.dart';
 

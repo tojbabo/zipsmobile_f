@@ -22,4 +22,4 @@ var gServAuto = 1;
 var gServOn = 0;
 
 /// 노인 모드 사용 여부[1: 노인모드, 0: 일반모드]
-var gSeniroMode = 0;
+var gSeniorMode = 0;

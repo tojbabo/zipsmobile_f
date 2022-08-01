@@ -78,7 +78,7 @@ class _LoadPage extends State<LoadPage> {
       if (sentemp == "") {
         SetData(SENIOR, "0");
       } else {
-        gSeniroMode = int.parse(sentemp);
+        gSeniorMode = int.parse(sentemp);
       }
 
       var autotemp = GetData(AUTORUNSERV);

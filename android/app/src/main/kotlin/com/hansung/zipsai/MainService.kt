@@ -32,13 +32,13 @@ class MainService : Service() {
     }
 
     override fun onDestroy() {
-        Toast.makeText(this, "service done", Toast.LENGTH_SHORT).show()
 
         var manager = getSystemService(NOTIFICATION_SERVICE)  as NotificationManager
         manager.cancelAll()
 
         temp.jobdoen()
 
+        Toast.makeText(this, "서비스를 종료합니다.", Toast.LENGTH_SHORT).show()
         // 여러 작업들 종료 시키는 
         super.onDestroy()
     }

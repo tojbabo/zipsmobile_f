@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
@@ -25,7 +26,7 @@ class MainActivity: FlutterActivity() {
             when (call.method) {
                 "servStart" -> {
                     if (isServiceRun(MainService::class.java.name)) {
-                        result.success("service aleady run")
+                        result.success("already")
                     } else {
                         val macid = call.argument<String>("macid")
                         val port = call.argument<Int>("port")
@@ -35,15 +36,16 @@ class MainActivity: FlutterActivity() {
                         val intent = Intent(this, MainService::class.java)
                         startService(intent)
 
-                        result.success("started")
+                        result.success("good")
+                        Toast.makeText(this, "서비스를 시작합니다.", Toast.LENGTH_SHORT).show()
                     }
                 }
                 "servStop" -> {
                     if (isServiceRun(MainService::class.java.name)) {
                         val it = Intent(context,MainService::class.java)
                         context?.stopService(it)
-                        result.success("stop successly")
-                    } else result.success("not service run")
+                        result.success("good")
+                    } else result.success("bad")
                 }
                 "isrun" -> {
                     if (isServiceRun(MainService::class.java.name)) result.success(true)
@@ -90,5 +92,4 @@ class MainActivity: FlutterActivity() {
         }
         return false
     }
-
 }

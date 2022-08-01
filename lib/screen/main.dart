@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:zipsai_mobile/util/webview.dart';
@@ -35,8 +36,12 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return WillPopScope(
         child: Container(
-            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-            child: Getwebview(context)),
+          padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+          child: Container(
+              // margin: EdgeInsets.only(
+              //     bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: Getwebview(context)),
+        ),
         onWillPop: () {
           setState(() {
             ClosePop();
@@ -44,4 +49,42 @@ class _MainPageState extends State<MainPage> {
           return Future(() => false);
         });
   }
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   return WillPopScope(
+  //       child: Container(
+  //           padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+  //           child: Padding(
+  //               padding: EdgeInsets.only(
+  //                   bottom: MediaQuery.of(context).viewInsets.bottom),
+  //               child: Column(
+  //                 children: <Widget>[
+  //                   Expanded(
+  //                       child: Scaffold(
+  //                     body: TextField(),
+  //                   )),
+  //                   Text("fuckyou")
+  //                 ],
+  //               ))),
+  //       onWillPop: () {
+  //         setState(() {
+  //           ClosePop();
+  //         });
+  //         return Future(() => false);
+  //       });
+  // }
+
+  // Widget build(BuildContext context) {
+  //   return WillPopScope(
+  //       child: Container(
+  //           padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+  //           child: Getwebview(context)),
+  //       onWillPop: () {
+  //         setState(() {
+  //           ClosePop();
+  //         });
+  //         return Future(() => false);
+  //       });
+  // }
 }

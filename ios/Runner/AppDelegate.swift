@@ -23,7 +23,7 @@ import CoreLocation
             
               s.Setting(macid: macid,port: 12009, interval: 30000)
               s.ServiceRun();
-              result("briliant")
+              result("good")
           }
           else if(call.method == "servStop"){
               s.ServiceStop()
