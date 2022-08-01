@@ -15,7 +15,7 @@ import CoreLocation
       
       channel.setMethodCallHandler({
           (call: FlutterMethodCall, result: @escaping FlutterResult)-> Void in
-          print(call.method)
+          print(call.method + " v")
           var s = Service.instance;
           if(call.method == "servStart"){
               var args = call.arguments as? Dictionary<String, Any>

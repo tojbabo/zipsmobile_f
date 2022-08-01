@@ -54,7 +54,7 @@ class Service :NSObject, CLLocationManagerDelegate{
         locationManager.desiredAccuracy = kCLLocationAccuracyThreeKilometers
         //locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
         
-        locationManager.distanceFilter = 10.0
+        //locationManager.distanceFilter = 10.0
         
         // 위치 수집 항상 허용 요청
         locationManager.requestAlwaysAuthorization();
@@ -65,6 +65,7 @@ class Service :NSObject, CLLocationManagerDelegate{
         
         isRun = true
         locationManager.startUpdatingLocation();
+        return true
     }
     
     func ServiceStop(){

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:zipsai_mobile/screen/paring.dart';
@@ -93,6 +95,8 @@ class _LoadPage extends State<LoadPage> {
       // 위치 권한 요청 화면 출력
       if (GetData(FIRSTLAUNCH) == '') {
         SetData(FIRSTLAUNCH, 'good');
+
+        //log(GetData(FIRSTLAUNCH));
 
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => Request(true)));
