@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -10,7 +11,10 @@ const MethodChannel channel = MethodChannel('zipsai');
 
 /// android Service를 시작하는 함수
 Future<int> StartService() async {
-  if (await LocPermissionCheck() == false) return 0;
+  if (Platform.isAndroid) {
+    if (await LocPermissionCheck() == false) return 0;
+  }
+
   try {
     if (gServOn == 1) return 1;
     var result = await channel

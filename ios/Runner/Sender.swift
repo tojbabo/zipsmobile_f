@@ -65,6 +65,39 @@ class Sender{
         dataTask.resume()
     }
     
+    
+    func GetSetting()-> String{
+        let url = URL(string: "\(ip):\(port)/data/location/setting")
+        var requestURL = URLRequest(url:url!)
+        
+        let dataTask = URLSession.shared.dataTask(with: requestURL){
+            (data,res,err) in
+
+            
+            guard err == nil else{
+                print("fail: ",err?.localizedDescription ?? "")
+                return
+            }
+            
+            let sucrange = 200..<300
+            guard let status = (res as? HTTPURLResponse)?.statusCode, sucrange.contains(status)
+            else{
+                print("err: ",(res as? HTTPURLResponse)?.statusCode ?? 0)
+                print("msg: ",(res as? HTTPURLResponse)?.description ?? "")
+                return
+            }
+            
+            let resCode = (res as? HTTPURLResponse)?.statusCode ?? 0
+            let resLen = data!
+            let resString = String(data:resLen, encoding: .utf8) ?? ""
+            
+        }
+        dataTask.resume()
+        return str
+    }
+    
+    
+    // 뮤텍스, 동시에 연결 방지
     func Start() -> Bool{
         guard flag else{
             self.postString = ""

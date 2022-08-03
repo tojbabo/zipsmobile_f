@@ -191,9 +191,9 @@ void _ControllerSetHandler(
         gPw = datas[1];
       });
 
-  //getappinfo[구현]: info 리턴
+  const _APPINFO = "getappinfo";
   controller.addJavaScriptHandler(
-      handlerName: "getappinfo",
+      handlerName: _APPINFO,
       callback: (arg) async {
         var data = await GetSettingData();
         var temp = gAppInfo;
@@ -207,6 +207,7 @@ void _ControllerSetHandler(
               ",mindistance: ${datas[1]}"
               ",minaccuracy: ${datas[2]}";
         }
+        log("[$_APPINFO] called: ${temp}");
 
         return temp;
       });
@@ -234,7 +235,6 @@ void _ControllerSetHandler(
   controller.addJavaScriptHandler(
       handlerName: _APPSTATE,
       callback: (arg) async {
-        log("[$_APPSTATE] called");
         await IsRunService();
 
         var num = 0;
@@ -245,6 +245,8 @@ void _ControllerSetHandler(
             ",$gServOn"
             ",$gSeniorMode"
             ",$num";
+
+        log("[$_APPSTATE] called : ${res}");
 
         return res;
       });

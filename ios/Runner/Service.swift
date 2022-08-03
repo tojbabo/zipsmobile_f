@@ -7,6 +7,8 @@
 
 import Foundation
 import CoreLocation
+import UserNotifications
+import UIKit
 
 class Service :NSObject, CLLocationManagerDelegate{
     static let instance = Service();
@@ -18,10 +20,20 @@ class Service :NSObject, CLLocationManagerDelegate{
     private var interval : Int
     private var macid : String
     
+    private var timer : Timer?
+    
     override private init(){
         macid = "999"
         interval = 3
         isRun = false
+        timer = nil
+        
+    }
+    
+    @objc func f(){
+        locationManager.stopUpdatingLocation()
+        InitLocationManager(dist: 1000.0)
+        locationManager.startUpdatingLocation()
     }
     
     func Setting(macid:String, port:Int, interval:Int){
@@ -31,49 +43,31 @@ class Service :NSObject, CLLocationManagerDelegate{
         
     }
     
+
     func ServiceRun(){
-        
         if(isRun){
+            print("[Service] already Launch")
             return
         }
-        
-        locationManager.delegate  = self;
-        
-        // 백그라운드 로케이션 업데이트를 설정할지
-        locationManager.allowsBackgroundLocationUpdates = true;
-        // 자동 종료를 허용할지
-        locationManager.pausesLocationUpdatesAutomatically = false;
-        
-        if #available(iOS 11.0, *) {
-            // 백그라운드에서 위치수집할때 알람을 띄울지말지
-            locationManager.showsBackgroundLocationIndicator = true
-        } else {
-            // Fallback on earlier versions
-        }
-        // 정확도 설정
-        locationManager.desiredAccuracy = kCLLocationAccuracyThreeKilometers
-        //locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-        
-        //locationManager.distanceFilter = 10.0
-        
-        // 위치 수집 항상 허용 요청
-        locationManager.requestAlwaysAuthorization();
-        
-        
-        
         s.Connect()
         
+        InitLocationManager(dist: 1000.0)
+        locationManager.startUpdatingLocation()
+        
+        timer = Timer.scheduledTimer(timeInterval: 10 * 60.0, target: self, selector: #selector(f), userInfo: nil, repeats: true)
+                
         isRun = true
-        locationManager.startUpdatingLocation();
-        return true
+
+        print("[Service] Launch")
     }
     
     func ServiceStop(){
         if(isRun){
             locationManager.stopUpdatingLocation()
+            timer?.invalidate()
             isRun = false
         }
-        
+        print("[Service] Destroy")
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]){
@@ -96,4 +90,30 @@ class Service :NSObject, CLLocationManagerDelegate{
         s.Send()
         s.End()
     }
+
+    func InitLocationManager(dist:Double){
+        locationManager.delegate  = self;
+        
+        // 백그라운드 로케이션 업데이트를 설정할지
+        locationManager.allowsBackgroundLocationUpdates = true;
+        // 자동 종료를 허용할지
+        locationManager.pausesLocationUpdatesAutomatically = false;
+        
+        if #available(iOS 11.0, *) {
+            // 백그라운드에서 위치수집할때 알람을 띄울지말지
+            locationManager.showsBackgroundLocationIndicator = true
+        } else {
+            // Fallback on earlier versions
+        }
+        // 정확도 설정
+        locationManager.desiredAccuracy = kCLLocationAccuracyThreeKilometers
+        //locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+        
+        locationManager.distanceFilter = dist
+        
+        // 위치 수집 항상 허용 요청
+        locationManager.requestAlwaysAuthorization();
+                
+    }
+        
 }

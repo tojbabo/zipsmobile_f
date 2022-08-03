@@ -15,22 +15,28 @@ import CoreLocation
       
       channel.setMethodCallHandler({
           (call: FlutterMethodCall, result: @escaping FlutterResult)-> Void in
-          print(call.method + " v")
+          //print(call.method + " v")
+          
           var s = Service.instance;
           if(call.method == "servStart"){
+        
               var args = call.arguments as? Dictionary<String, Any>
               var macid = args?["macid"] as! String
             
               s.Setting(macid: macid,port: 12009, interval: 30000)
               s.ServiceRun();
+              
               result("good")
           }
           else if(call.method == "servStop"){
               s.ServiceStop()
           }
           else if(call.method == "isrun"){
-              print(s.isRun)
+              //print(s.isRun)
               result(s.isRun)
+          }
+          else if(call.method == "getSetting"){
+              result("no")
           }
           else if(call.method == " getLoca"){
               
@@ -39,4 +45,8 @@ import CoreLocation
       GeneratedPluginRegistrant.register(with: self)
       return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
+
+
+    
+    
 }
