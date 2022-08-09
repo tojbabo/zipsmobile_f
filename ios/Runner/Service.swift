@@ -22,11 +22,19 @@ class Service :NSObject, CLLocationManagerDelegate{
     
     private var timer : Timer?
     
+    public var mindist : Double
+    public var accuracy : Int
+    public var timeInterval : Double
+    
     override private init(){
         macid = "999"
         interval = 3
         isRun = false
         timer = nil
+        
+        mindist = 0.0
+        accuracy = 0
+        timeInterval = 0.0
         
     }
     
@@ -44,17 +52,39 @@ class Service :NSObject, CLLocationManagerDelegate{
     }
     
 
-    func ServiceRun(){
+    func ServiceRun() {
         if(isRun){
             print("[Service] already Launch")
             return
         }
         s.Connect()
+        let res = s.GetSetting()
+        var json : Dictionary<String,Any> = [String:Any]()
+        do{
+            json = try JSONSerialization.jsonObject(with: Data(res.utf8),options: []) as! [String:Any]
+        }catch{
+            print("err good")
+            return
+            
+        }
+        
+        
+        mindist = (json["distance"] ?? 0) as! Double
+        accuracy = (json["accuracy"] ?? 1000.0) as! Int
+        timeInterval = (json["interval"] ?? 10 * 60 * 1000) as! Double
+        
+        timeInterval = timeInterval / 1000
+        
+        print("intervarl \(timeInterval)")
+        print("accuracy \(accuracy)")
+        print("distance \(mindist)")
+        
+        //print("resutl is \(res)")
         
         InitLocationManager(dist: 1000.0)
         locationManager.startUpdatingLocation()
         
-        timer = Timer.scheduledTimer(timeInterval: 10 * 60.0, target: self, selector: #selector(f), userInfo: nil, repeats: true)
+        timer = Timer.scheduledTimer(timeInterval: timeInterval, target: self, selector: #selector(f), userInfo: nil, repeats: true)
                 
         isRun = true
 
