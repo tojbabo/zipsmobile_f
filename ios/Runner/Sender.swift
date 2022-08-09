@@ -66,10 +66,10 @@ class Sender{
     }
     
     
-    func GetSetting()-> String{
+    func GetSetting() -> String{
         let url = URL(string: "\(ip):\(port)/data/location/setting")
         var requestURL = URLRequest(url:url!)
-        
+        var resString = ""
         let dataTask = URLSession.shared.dataTask(with: requestURL){
             (data,res,err) in
 
@@ -89,11 +89,12 @@ class Sender{
             
             let resCode = (res as? HTTPURLResponse)?.statusCode ?? 0
             let resLen = data!
-            let resString = String(data:resLen, encoding: .utf8) ?? ""
-            
+            resString = String(data:resLen, encoding: .utf8) ?? ""
+            //print(resString)
         }
         dataTask.resume()
-        return str
+        sleep(1)
+        return resString
     }
     
     

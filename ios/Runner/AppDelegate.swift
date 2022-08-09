@@ -23,6 +23,7 @@ import CoreLocation
               var args = call.arguments as? Dictionary<String, Any>
               var macid = args?["macid"] as! String
             
+              
               s.Setting(macid: macid,port: 12009, interval: 30000)
               s.ServiceRun();
               
@@ -36,7 +37,7 @@ import CoreLocation
               result(s.isRun)
           }
           else if(call.method == "getSetting"){
-              result("no")
+              result("\(s.timeInterval),\(s.mindist),\(s.accuracy)")
           }
           else if(call.method == " getLoca"){
               
