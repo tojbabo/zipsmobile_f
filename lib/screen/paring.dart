@@ -53,14 +53,30 @@ class _ParingPage extends State<ParingPage> {
                   Container(
                       height: 70,
                       decoration: const BoxDecoration(color: Colors.grey),
-                      child: Center(
-                        child: ElevatedButton(
-                            child: Text("click me"),
-                            onPressed: () => {
-                                  setState(() {
-                                    ssid_list.add(wifi("test", 44));
-                                  }),
-                                }),
+                      child: Row(
+                        children: <Widget>[
+                          SizedBox(
+                            width: 50,
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Text('SN: '),
+                            ),
+                          ),
+                          Expanded(
+                            child: Padding(
+                                padding: EdgeInsets.only(left: 10.0),
+                                child: Text("0000000252")),
+                          ),
+                          Center(
+                            child: ElevatedButton(
+                                child: Text("페어링"),
+                                onPressed: () => {
+                                      setState(() {
+                                        ssid_list.add(wifi("test", 44));
+                                      }),
+                                    }),
+                          )
+                        ],
                       )),
                   Expanded(
                       child: Container(
