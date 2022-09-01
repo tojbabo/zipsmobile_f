@@ -182,11 +182,14 @@ void _ControllerSetHandler(
       });
 
   //logininfo[적용 중]: 로그인 정보 가져옴
+  const _LOGININFO = "logininfo";
   controller.addJavaScriptHandler(
-      handlerName: 'logininfo',
+      handlerName: _LOGININFO,
       callback: (arg) {
         String param = arg.cast<String>()[0];
         var datas = param.split(',');
+
+        log("[$_LOGININFO]id is : ${datas[0]}");
         gId = datas[0];
         gPw = datas[1];
       });

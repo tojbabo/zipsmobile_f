@@ -71,18 +71,19 @@ class Service :NSObject, CLLocationManagerDelegate{
         
         mindist = (json["distance"] ?? 0) as! Double
         accuracy = (json["accuracy"] ?? 1000.0) as! Int
-        timeInterval = (json["interval"] ?? 10 * 60 * 1000) as! Double
+        timeInterval = (json["interval"] ?? 60 * 10  * 1000) as! Double
         
         timeInterval = timeInterval / 1000
         
-        print("intervarl \(timeInterval)")
-        print("accuracy \(accuracy)")
-        print("distance \(mindist)")
+//        print("intervarl \(timeInterval)")
+//        print("accuracy \(accuracy)")
+//        print("distance \(mindist)")
         
         //print("resutl is \(res)")
         
         InitLocationManager(dist: 1000.0)
         locationManager.startUpdatingLocation()
+        //print(timeInterval)
         
         timer = Timer.scheduledTimer(timeInterval: timeInterval, target: self, selector: #selector(f), userInfo: nil, repeats: true)
                 
@@ -103,10 +104,19 @@ class Service :NSObject, CLLocationManagerDelegate{
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]){
         let lastLoc = locations.last;
         guard s.Start() else{
+            print("it is not ready")
             return
         }
         //var acc = lastLoc?.horizontalAccuracy
-        //if(acc! > 30) {return}
+        
+        print("accuracy: \(lastLoc!.horizontalAccuracy)")
+        print("lat is  : \(lastLoc?.coordinate.latitude)")
+        print("lng is  : \(lastLoc?.coordinate.longitude)")
+        
+        
+        if(lastLoc!.horizontalAccuracy > Double(accuracy)) {return}
+        if((lastLoc?.coordinate.latitude)! < 32.8 || (lastLoc?.coordinate.latitude)! > 38.8 ) {return}
+        if((lastLoc?.coordinate.longitude)! < 125.5 || (lastLoc?.coordinate.longitude)! > 131.9) {return}
         
         //print(lastLoc?.horizontalAccuracy)
         s.InputParam(key: "id", val: macid)
@@ -114,7 +124,7 @@ class Service :NSObject, CLLocationManagerDelegate{
         s.InputParam(key: "lat", val: "\((lastLoc?.coordinate.latitude)!)")
         s.InputParam(key: "lng", val: "\((lastLoc?.coordinate.longitude)!)")
         s.InputParam(key: "spd", val: "\((lastLoc?.speed)!)")
-        s.InputParam(key: "acc", val: "\((lastLoc?.horizontalAccuracy)!)")
+        s.InputParam(key: "acc", val: String(format:"%.2f",(lastLoc?.horizontalAccuracy)!))
         s.InputParam(key: "alt", val: "\((lastLoc?.altitude)!)")
         
         s.Send()

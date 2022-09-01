@@ -57,7 +57,7 @@ class Sender{
                 print("msg: ",(res as? HTTPURLResponse)?.description ?? "")
                 return;
             }
-            
+            print("send god!")
             let resCode = (res as? HTTPURLResponse)?.statusCode ?? 0
             let resLen = data!
             let resString = String(data:resLen, encoding: .utf8) ?? ""
