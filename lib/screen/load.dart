@@ -110,6 +110,6 @@ class _LoadPage extends State<LoadPage> {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-    return Container(alignment: Alignment.center, color: Colors.white);
+    return Container(alignment: Alignment.center);
   }
 }

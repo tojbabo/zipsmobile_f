@@ -10,7 +10,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      theme: ThemeData(),
+      theme: ThemeData(scaffoldBackgroundColor: const Color(0xff141620)),
       home: MainPage(title: 'Flutter Demo Home Page'),
     );
   }

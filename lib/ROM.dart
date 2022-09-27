@@ -1,9 +1,9 @@
-const version = "1.3.10";
+const version = "1.3.11";
 
 //const g__servIp = 'main.zips.ai';
 const gServerIp = 'dev.zips.ai';
-const gHttpPort = 10000;
-const gHttpsPort = 10009;
+const gHttpPort = 12000;
+const gHttpsPort = 12009;
 
 const gServHttpAdr = 'http://$gServerIp:$gHttpPort/';
 const gServHttpsAdr = 'https://$gServerIp:$gHttpsPort/';
