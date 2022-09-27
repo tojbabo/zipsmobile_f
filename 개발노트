@@ -13,8 +13,12 @@ IOS min ver : 10.0
 IOS - 
     required a higher minimum deployment target. 최소 버전 올려주기 ~> ios/Podfile
 ####
+to 1.3.12
 
-to 1.3.11
+#1.3.11
+1. APP STORE 등록
+2. IOS 프레임 색 변경
+
 #1.3.10
 1. IOS 백그라운드 서비스 시간 간격 추가.
 2. 가상 키보드에 맞게 UI 변경되도록 수정
