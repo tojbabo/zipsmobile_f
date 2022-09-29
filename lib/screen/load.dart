@@ -47,6 +47,7 @@ class _LoadPage extends State<LoadPage> {
       // 인터넷 연결 체크
       // 연결 안되어 있으면 페어링 모드로 전환
       if (!await internetcheck()) {
+        //if (true) {
         //if (false) {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => ParingApp()));
@@ -57,6 +58,8 @@ class _LoadPage extends State<LoadPage> {
       // 위치 권한 체크
       LocPermissionCheck();
       IsRunService();
+
+      //FuckUTest();
 
       // 파일 에서 셋팅 값 읽어옴
       await FileInit();

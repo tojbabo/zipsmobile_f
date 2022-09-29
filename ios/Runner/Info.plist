@@ -34,6 +34,8 @@
 	<string>사용자의 위치정보를 수집합니다</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>앱은 사용자의 위치 정보를 수집하여 사용자가 외출 중인지 귀가 중인지를 판단하여 서비스를 제공합니다.</string>
+	<key>com.apple.developer.networking.wifi-info</key>
+	<true/>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
