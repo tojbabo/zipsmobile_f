@@ -58,6 +58,8 @@ class _LoadPage extends State<LoadPage> {
       LocPermissionCheck();
       IsRunService();
 
+      //FuckUTest();
+
       // 파일 에서 셋팅 값 읽어옴
       await FileInit();
 

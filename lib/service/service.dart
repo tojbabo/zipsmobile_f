@@ -80,3 +80,7 @@ Future<String> GetSettingData() async {
     return "";
   }
 }
+
+Future<void> FuckUTest() async {
+  channel.invokeMethod('test');
+}
