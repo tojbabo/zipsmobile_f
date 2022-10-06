@@ -46,8 +46,8 @@ class _LoadPage extends State<LoadPage> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       // 인터넷 연결 체크
       // 연결 안되어 있으면 페어링 모드로 전환
-      if (!await internetcheck()) {
-        //if (false) {
+      // if (!await internetcheck()) {
+      if (true) {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => ParingApp()));
         gParingMode = 1;

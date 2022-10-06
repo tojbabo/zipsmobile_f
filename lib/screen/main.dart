@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:zipsai_mobile/util/webview.dart';
 
+import '../util/logger.dart';
+
 class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

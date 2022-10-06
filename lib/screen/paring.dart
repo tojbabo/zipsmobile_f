@@ -1,7 +1,13 @@
 import 'dart:developer';
+import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:wifi_scan/wifi_scan.dart';
+
+import 'package:udp/udp.dart';
+
+import 'package:encrypt/encrypt.dart' as en;
 
 class ParingApp extends StatelessWidget {
   const ParingApp({Key? key}) : super(key: key);
@@ -38,6 +44,8 @@ class _ParingPage extends State<ParingPage> {
       setState(() {});
       log("called");
     });
+
+    golisten();
   }
 
   @override
@@ -72,7 +80,8 @@ class _ParingPage extends State<ParingPage> {
                                 child: Text("페어링"),
                                 onPressed: () => {
                                       setState(() {
-                                        ssid_list.add(wifi("test", 44));
+                                        // ssid_list.add(wifi("test", 44));
+                                        ffff();
                                       }),
                                     }),
                           )
@@ -188,4 +197,67 @@ class wifi {
   String ssid;
   int power;
   wifi(this.ssid, this.power);
+}
+
+void ffff() async {
+  var sender = await UDP.bind(Endpoint.any(port: const Port(65000)));
+
+  var dataLength = await sender.send(
+      setAES().codeUnits,
+      //Endpoint.unicast(InternetAddress("127.0.0.1"), port: const Port(65002)));
+      Endpoint.broadcast(port: const Port(65002)));
+
+  log("$dataLength bytes sent.");
+  sender.close();
+}
+
+void golisten() async {
+  var receiver = await UDP.bind(Endpoint.any(port: const Port(65002)));
+  receiver.asStream().listen((datagram) {
+    if (datagram != null) {
+      var str = String.fromCharCodes(datagram.data);
+      log("listen : ${str}");
+      log("${datagram.address} / ${datagram.port}");
+      log("final result is: ${getAES(str)}");
+    }
+  }, onDone: () {
+    receiver.close();
+  });
+  log("go listen");
+}
+
+var _key = [
+  0x65,
+  0x31,
+  0xFE,
+  0xA2,
+  0xBB,
+  0x69,
+  0x58,
+  0x6D,
+  0x89,
+  0x2A,
+  0x87,
+  0xD5,
+  0x01,
+  0x27,
+  0xC4,
+  0xD2
+];
+String setAES() {
+  String text = "i am sex machine";
+  final key = en.Key.fromBase16('6531FEA2BB69586D892A87D50127C4D2');
+  final iv = en.IV.fromLength(16);
+  final encrypter = en.Encrypter(en.AES(key));
+  log("암호화 is: ${encrypter.encrypt(text, iv: iv).base64}");
+  return encrypter.encrypt(text, iv: iv).base64;
+}
+
+String getAES(String data) {
+  final key = en.Key.fromBase16('6531FEA2BB69586D892A87D50127C4D2');
+  final iv = en.IV.fromLength(16);
+  final encrypter = en.Encrypter(en.AES(key));
+
+  final result = encrypter.decrypt64(data, iv: iv);
+  return result;
 }
