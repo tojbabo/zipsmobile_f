@@ -1,13 +1,9 @@
 import 'dart:developer';
-import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:wifi_scan/wifi_scan.dart';
 
-import 'package:udp/udp.dart';
-
-import 'package:encrypt/encrypt.dart' as en;
+import '../util/wifi.dart';
 
 class ParingApp extends StatelessWidget {
   const ParingApp({Key? key}) : super(key: key);
@@ -31,21 +27,22 @@ class ParingPage extends StatefulWidget {
 }
 
 class _ParingPage extends State<ParingPage> {
-  late List<wifi> ssid_list;
-  late TextEditingController ssid_text;
+  late List<Wifi> ssid_list;
+  late TextEditingController TE_ssid;
+  late TextEditingController TE_password;
+  Connector c = Connector();
 
   @override
   void initState() {
     super.initState();
     ssid_list = [];
-    ssid_text = TextEditingController(text: "sss");
+    TE_ssid = TextEditingController();
+    TE_password = TextEditingController();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       _WifiScan();
       setState(() {});
       log("called");
     });
-
-    golisten();
   }
 
   @override
@@ -58,35 +55,6 @@ class _ParingPage extends State<ParingPage> {
               padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
               child: Column(
                 children: <Widget>[
-                  Container(
-                      height: 70,
-                      decoration: const BoxDecoration(color: Colors.grey),
-                      child: Row(
-                        children: <Widget>[
-                          SizedBox(
-                            width: 50,
-                            child: Align(
-                              alignment: Alignment.centerRight,
-                              child: Text('SN: '),
-                            ),
-                          ),
-                          Expanded(
-                            child: Padding(
-                                padding: EdgeInsets.only(left: 10.0),
-                                child: Text("0000000252")),
-                          ),
-                          Center(
-                            child: ElevatedButton(
-                                child: Text("페어링"),
-                                onPressed: () => {
-                                      setState(() {
-                                        // ssid_list.add(wifi("test", 44));
-                                        ffff();
-                                      }),
-                                    }),
-                          )
-                        ],
-                      )),
                   Expanded(
                       child: Container(
                           decoration: const BoxDecoration(
@@ -112,8 +80,7 @@ class _ParingPage extends State<ParingPage> {
                                       child: GestureDetector(
                                           onTap: () {
                                             log("good $idx");
-                                            ssid_text.text =
-                                                ssid_list[idx].ssid;
+                                            TE_ssid.text = ssid_list[idx].ssid;
                                           },
                                           child: Row(children: [
                                             Expanded(
@@ -130,7 +97,48 @@ class _ParingPage extends State<ParingPage> {
                                 },
                               )))),
                   Container(
+                      height: 70,
+                      decoration: const BoxDecoration(color: Colors.grey),
+                      child: Row(
+                        children: <Widget>[
+                          const SizedBox(
+                            width: 50,
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Text('SN: '),
+                            ),
+                          ),
+                          const Expanded(
+                            child: Padding(
+                                padding: EdgeInsets.only(left: 10.0),
+                                child: Text("0000000252")),
+                          ),
+                          Center(
+                            child: ElevatedButton(
+                                child: Text("연결 테스트"),
+                                onPressed: () => {
+                                      setState(() {
+                                        c.Start_Listener();
+                                      }),
+                                    }),
+                          ),
+                          Center(
+                            child: ElevatedButton(
+                                child: Text("페어링"),
+                                onPressed: () => {
+                                      setState(() {
+                                        log('${TE_ssid.text}:${TE_password.text}');
+                                        log("clicked");
+                                        // ssid_list.add(wifi("test", 44));
+                                        // c.sender();
+                                      }),
+                                    }),
+                          )
+                        ],
+                      )),
+                  Container(
                       height: 50,
+                      decoration: const BoxDecoration(color: Colors.grey),
                       child: FractionallySizedBox(
                         widthFactor: 1,
                         child: Row(children: [
@@ -139,7 +147,7 @@ class _ParingPage extends State<ParingPage> {
                               child: Text("SSID")),
                           Expanded(
                               child: TextField(
-                            controller: ssid_text,
+                            controller: TE_ssid,
                             decoration: const InputDecoration(
                                 border: OutlineInputBorder(),
                                 labelText: "SSID"),
@@ -147,8 +155,9 @@ class _ParingPage extends State<ParingPage> {
                           const Padding(
                               padding: EdgeInsets.only(left: 20, right: 10),
                               child: Text("Passwd")),
-                          const Expanded(
+                          Expanded(
                               child: TextField(
+                            controller: TE_password,
                             decoration: InputDecoration(
                                 border: OutlineInputBorder(),
                                 labelText: "Password"),
@@ -157,7 +166,11 @@ class _ParingPage extends State<ParingPage> {
                             width: 20,
                           )
                         ]),
-                      ))
+                      )),
+                  Container(
+                    height: 30,
+                    decoration: const BoxDecoration(color: Colors.grey),
+                  )
                 ],
               ),
             )));
@@ -182,7 +195,7 @@ class _ParingPage extends State<ParingPage> {
             templist.sort(((a, b) => a.level.compareTo(b.level)));
             templist.reversed.forEach((element) {
               //ssids.add("${element.ssid}[${element.level}]");
-              ssid_list.add(wifi(element.ssid, element.level));
+              ssid_list.add(Wifi(element.ssid, element.level));
             });
           }
         }
@@ -191,73 +204,4 @@ class _ParingPage extends State<ParingPage> {
       log("no its disable");
     }
   }
-}
-
-class wifi {
-  String ssid;
-  int power;
-  wifi(this.ssid, this.power);
-}
-
-void ffff() async {
-  var sender = await UDP.bind(Endpoint.any(port: const Port(65000)));
-
-  var dataLength = await sender.send(
-      setAES().codeUnits,
-      //Endpoint.unicast(InternetAddress("127.0.0.1"), port: const Port(65002)));
-      Endpoint.broadcast(port: const Port(65002)));
-
-  log("$dataLength bytes sent.");
-  sender.close();
-}
-
-void golisten() async {
-  var receiver = await UDP.bind(Endpoint.any(port: const Port(65002)));
-  receiver.asStream().listen((datagram) {
-    if (datagram != null) {
-      var str = String.fromCharCodes(datagram.data);
-      log("listen : ${str}");
-      log("${datagram.address} / ${datagram.port}");
-      log("final result is: ${getAES(str)}");
-    }
-  }, onDone: () {
-    receiver.close();
-  });
-  log("go listen");
-}
-
-var _key = [
-  0x65,
-  0x31,
-  0xFE,
-  0xA2,
-  0xBB,
-  0x69,
-  0x58,
-  0x6D,
-  0x89,
-  0x2A,
-  0x87,
-  0xD5,
-  0x01,
-  0x27,
-  0xC4,
-  0xD2
-];
-String setAES() {
-  String text = "i am sex machine";
-  final key = en.Key.fromBase16('6531FEA2BB69586D892A87D50127C4D2');
-  final iv = en.IV.fromLength(16);
-  final encrypter = en.Encrypter(en.AES(key));
-  log("암호화 is: ${encrypter.encrypt(text, iv: iv).base64}");
-  return encrypter.encrypt(text, iv: iv).base64;
-}
-
-String getAES(String data) {
-  final key = en.Key.fromBase16('6531FEA2BB69586D892A87D50127C4D2');
-  final iv = en.IV.fromLength(16);
-  final encrypter = en.Encrypter(en.AES(key));
-
-  final result = encrypter.decrypt64(data, iv: iv);
-  return result;
 }

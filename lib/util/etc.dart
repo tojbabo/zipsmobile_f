@@ -54,3 +54,26 @@ Future<bool> internetcheck() async {
   }
   return false;
 }
+
+class json {
+  late List<Map<String, String>> list;
+  json(String data) {
+    list = [];
+    int startidx = data.indexOf("{");
+    int endidx = data.lastIndexOf("}");
+    String realdata = data.substring(startidx + 1, endidx);
+
+    var datas = realdata.split(',');
+    for (var i = 0; i < datas.length; i++) {
+      var kv = datas[i].split(":");
+      list.add({kv[0].replaceAll('"', ''): kv[1].replaceAll('"', '')});
+    }
+  }
+
+  String? get(String key) {
+    for (var i = 0; i < list.length; i++) {
+      if (list[i].keys.first == key) return list[i].values.first;
+    }
+    return null;
+  }
+}

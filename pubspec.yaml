@@ -39,37 +39,37 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   
-  # for WebView 
+  # 웹뷰용 
   flutter_inappwebview:
     git: https://github.com/CodeEagle/flutter_inappwebview
-  # for Toast
+  
+  # 토스트 출력용
   fluttertoast:
-  # for Request Permission
+  
+  # 권한 요청 용
   permission_handler:
-  # for foreground service
-  flutter_foreground_task:
-  # for foreground notification
-  #flutter_local_notifications:
-  # for file read
-  path_provider:
-  # for link to google play for version update
-  url_launcher:
-  # for test
-  test:
-  # for get location
 
+  # 포그라운드 서비스용
+  flutter_foreground_task:
+
+  # 파일 입출력용
+  path_provider:
+
+  # 구글 플레이/ 앱스토어 url 링크 연결용
+  url_launcher:
+
+  # upd 통신용
   udp:
 
+  # 통신 데이터 암호화-복호화 용
   encrypt:
   
-  location:
-  #geolocator:
-
-  http:
-
+  # 와이파이 스캔 용
   wifi_scan:
-
   better_wifi_manager:
+
+  # 로컬 ip 가져오는용
+  network_info_plus: 
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
