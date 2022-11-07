@@ -2,7 +2,8 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:zipsai_mobile/screen/paring.dart';
+import 'package:zipsai_mobile/screen/wifi/enter.dart';
+import 'package:zipsai_mobile/screen/wifi/paring.dart';
 import 'package:zipsai_mobile/screen/request.dart';
 import 'package:zipsai_mobile/util/file.dart';
 
@@ -26,7 +27,6 @@ class LoadAPP extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      theme: ThemeData(),
       home: LoadPage(),
     );
   }
@@ -46,10 +46,10 @@ class _LoadPage extends State<LoadPage> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       // 인터넷 연결 체크
       // 연결 안되어 있으면 페어링 모드로 전환
-      // if (!await internetcheck()) {
-      if (true) {
+      if (!await internetcheck()) {
+        // if (true) {
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => ParingApp()));
+            context, MaterialPageRoute(builder: (context) => EnterWiFi()));
         gParingMode = 1;
         return;
       }

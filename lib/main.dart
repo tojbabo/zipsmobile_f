@@ -8,7 +8,7 @@ void main() async {
   log(version);
   //runApp(MyApp());
 
-  runApp(const MaterialApp(
+  runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     title: 'load',
 

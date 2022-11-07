@@ -4,8 +4,8 @@ import 'dart:math' as math;
 import 'package:encrypt/encrypt.dart' as en;
 import 'package:flutter/foundation.dart';
 
-class security {
-  security();
+class Security {
+  Security();
 
   String _KEY = '6531FEA2BB69586D892A87D50127C4D2';
   List<int> _KEY_ARY = [
@@ -31,6 +31,7 @@ class security {
   /// 조절기가 브로드캐스트한 데이터에서 중요 부분을 추출하는 함수
   String Get_UDP_Data(String data) {
     var data_bin = data.codeUnits;
+    //log("data_bin is: ${data_bin}");
 
     var payload = _Get_UDP_Payload(data_bin);
 

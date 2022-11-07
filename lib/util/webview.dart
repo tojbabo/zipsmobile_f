@@ -7,12 +7,10 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:zipsai_mobile/service/service.dart';
 import 'package:zipsai_mobile/util/file.dart';
 import '../ROM.dart';
-import '../screen/request.dart';
 import '../RAM.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:zipsai_mobile/screen/request.dart';
 import 'package:zipsai_mobile/RAM.dart';
 
 import 'etc.dart';
@@ -116,55 +114,33 @@ String _GetQueryBody() {
 // webview 자바 스크립트 핸들러
 void _ControllerSetHandler(
     InAppWebViewController controller, BuildContext context) {
-  //alert: 서버에서 앱으로 알람
+  // URL 전송 및 실행
+  const _URL = "URL";
   controller.addJavaScriptHandler(
-      handlerName: "alerts",
-      callback: (arg) {
-        showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                content: const Text('애플리케이션 버전이 낮습니다.\n최신 버전으로 업데이트하세요'),
-                actions: <Widget>[
-                  TextButton(
-                      onPressed: () {
-                        launch(
-                            'https://play.google.com/store/apps/details?id=com.hansung.zipsai');
-                      },
-                      child: const Text('업데이트')),
-                ],
-              );
-            });
-      });
-
-  //URL: 업데이트 URL전송
-  controller.addJavaScriptHandler(
-      handlerName: "URL",
+      handlerName: _URL,
       callback: (arg) {
         var msg = arg.cast<String>()[0];
         //print(msg);
         launch(msg);
       });
 
-  //toast: 서버 메시지 toast로 뿌림
+  // toast 실행
+  const _TOAST = "toast";
   controller.addJavaScriptHandler(
-      handlerName: "toast",
+      handlerName: _TOAST,
       callback: (arg) {
-        log("call toast");
         var msg = arg.cast<String>()[0];
         Fluttertoast.showToast(msg: msg);
       });
 
-  //appclose [구현]
+  //앱 종료 이벤트
+  const _CLOSE = "appclose";
   controller.addJavaScriptHandler(
-      handlerName: "appclose",
+      handlerName: _CLOSE,
       callback: (arg) {
         CookieManager().deleteAllCookies();
-        //exit(0);
         Navigator.of(context).pop(true);
         SystemNavigator.pop();
-        //exit(0);
       });
 
   // 자동로그인 설정
@@ -215,23 +191,6 @@ void _ControllerSetHandler(
         return temp;
       });
 
-  //getdeviceid[구현]: 기기 id 전달
-  controller.addJavaScriptHandler(
-      handlerName: "getdeviceid",
-      callback: (arg) {
-        return gMacId;
-      });
-
-  // 노인모드 비/활성화
-  const _SENIORMODE = "senior";
-  controller.addJavaScriptHandler(
-      handlerName: _SENIORMODE,
-      callback: (arg) {
-        int flag = arg.cast<int>()[0];
-        SetData(SENIOR, '$flag');
-        log('[$_SENIORMODE] mode: $flag');
-      });
-
   ///서비스 관련부
   // 서버로 서비스 관련 상태값 전달
   const _APPSTATE = "appstate";
@@ -254,9 +213,10 @@ void _ControllerSetHandler(
         return res;
       });
 
-  //startservice: 서버에서 기기로 서비스 실행
+  // 서버에서 기기로 서비스 실행
+  const _START_SERVICE = "startservice";
   controller.addJavaScriptHandler(
-      handlerName: "startservice",
+      handlerName: _START_SERVICE,
       callback: (arg) async {
         int flag = arg.cast<int>()[0];
         if (flag == 1 || (gServEnable == 1 && gServAuto == 1)) {
