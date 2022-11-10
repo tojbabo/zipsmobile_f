@@ -5,7 +5,6 @@ import CoreLocation
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
-    var locationManager = CLLocationManager();
     override func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
@@ -42,8 +41,8 @@ import CoreLocation
             else if(call.method == "getLoca"){
             }
             else if(call.method == "test"){
-                var util = Util()
-                util.fff()
+                print("test on!!")
+                s.setupLocation()
             }
         })
         GeneratedPluginRegistrant.register(with: self)

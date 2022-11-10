@@ -10,6 +10,11 @@ import CoreLocation
 import UserNotifications
 import UIKit
 
+
+import NetworkExtension
+import SystemConfiguration.CaptiveNetwork
+
+
 class Service :NSObject, CLLocationManagerDelegate{
     static let instance = Service();
     private let locationManager = CLLocationManager();
@@ -155,5 +160,53 @@ class Service :NSObject, CLLocationManagerDelegate{
         locationManager.requestAlwaysAuthorization();
                 
     }
+    
+    func setupLocation(){
+        if #available(iOS 13.0, *){
+            let status = CLLocationManager.authorizationStatus()
+            
+            if (status == .authorizedWhenInUse || status == .authorizedAlways){
+                var res = fetchNetworkInfo()
+                res?.forEach({ NetworkInfo in
+                    if let ssid = NetworkInfo.ssid{
+                        print("SSID is: \(ssid)")
+                    }
+                })
+                
+            }else{
+                locationManager.delegate = self
+                locationManager.requestWhenInUseAuthorization()
+            }
+        }else{
+        }
+    }
+    
+    func fetchNetworkInfo() -> [NetworkInfo]?{
+        if let interfaces: NSArray = CNCopySupportedInterfaces(){
+            var networkinfos = [NetworkInfo]()
+            for interface in interfaces{
+                let interfaceName = interface as! String
+                var networkInfo = NetworkInfo(instance: interfaceName,
+                                              success:false,
+                                              ssid:nil,
+                                              bssid:nil)
+                if let dict = CNCopyCurrentNetworkInfo(interfaceName as CFString) as NSDictionary?{
+                    networkInfo.success = true
+                    networkInfo.ssid = dict[kCNNetworkInfoKeySSID as String] as? String
+                    networkInfo.bssid = dict[kCNNetworkInfoKeyBSSID as String] as? String
+                }
+                networkinfos.append(networkInfo)
+            }
+            return networkinfos
+        }
+        return nil
+    }
+
         
+       struct NetworkInfo{
+           var instance: String
+           var success:Bool = false
+           var ssid : String?
+           var bssid: String?
+       }
 }
