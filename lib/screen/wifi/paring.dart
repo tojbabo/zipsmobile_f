@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:developer';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:wifi_scan/wifi_scan.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
+import 'dart:io' show Platform;
 
 import '../../util/wifi.dart';
 
@@ -29,6 +31,12 @@ class _ParingPage extends State<ParingPage> {
   late String TE_sn;
   Connector connector = Connector();
 
+  Timer? _animate_timer;
+  int _animate_state = 2;
+  IconData _icon = Icons.wifi_rounded;
+
+  bool _isIOS = false;
+
   @override
   void initState() {
     super.initState();
@@ -37,8 +45,11 @@ class _ParingPage extends State<ParingPage> {
     TE_password = TextEditingController();
     TE_sn = '';
 
-    // 새로 연결
-    //connector.Listener_UDP(Callback_Connect);
+    if (Platform.isIOS) {
+      setState(() {
+        _isIOS = true;
+      });
+    }
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       setState(() {
@@ -50,7 +61,9 @@ class _ParingPage extends State<ParingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: GestureDetector(
+        body: Stack(
+      children: [
+        GestureDetector(
             onTap: () => {FocusScope.of(context).unfocus()},
             child: Container(
               color: Color.fromARGB(255, 54, 54, 54),
@@ -84,7 +97,9 @@ class _ParingPage extends State<ParingPage> {
                               ])))),
                   // 와이파이 목록 리스트
                   Expanded(
-                      child: Container(
+                      child: Stack(
+                    children: [
+                      Container(
                           margin: EdgeInsets.only(left: 10.0, right: 10.0),
                           decoration: BoxDecoration(
                               color: Colors.white,
@@ -126,7 +141,30 @@ class _ParingPage extends State<ParingPage> {
                                             height: double.infinity),
                                       ));
                                 },
-                              )))),
+                              ))),
+                      Container(
+                        width: double.infinity,
+                        height: double.infinity,
+                        child: Visibility(
+                            visible: _isIOS,
+                            child: Container(
+                                margin: const EdgeInsets.only(
+                                    left: 10.0, right: 10.0),
+                                decoration: BoxDecoration(
+                                    color: const Color.fromARGB(200, 0, 0, 0),
+                                    borderRadius: BorderRadius.circular(10.0)),
+                                child: const Center(
+                                  child: Text(
+                                    '[ios] \n사용 가능한 WiFi 목록을 \n불러올 수 없습니다.',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 19,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ))),
+                      )
+                    ],
+                  )),
                   // ssid, passwd 입력 칸, 데이터 전송 버튼
                   Expanded(
                     flex: 0,
@@ -181,20 +219,29 @@ class _ParingPage extends State<ParingPage> {
                                       left: 5.0, right: 10.0),
                                   child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
-                                          primary: Colors.black,
+                                          primary: const Color.fromARGB(
+                                              255, 25, 162, 244),
                                           minimumSize: const Size.fromWidth(
                                               double.infinity)),
-                                      child: const Text("페어링"),
+                                      child: const Text("페어링",
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w600)),
                                       onPressed: () {
+                                        _Sending_Animate_On();
                                         connector.TCP_WiFi_Data_Send(
                                                 TE_ssid.text, TE_password.text)
                                             .then((value) {
                                           if (value == '') {
-                                            value =
-                                                "data is : ${TE_ssid.text}-${TE_password.text}";
+                                            Fluttertoast.showToast(
+                                                msg: "뭔가 에러가 있다.");
+                                          } else {
+                                            Fluttertoast.showToast(
+                                                msg: "페어링을 완료했습니다.");
                                           }
-                                          Fluttertoast.showToast(
-                                              msg: "페어링을 완료했습니다.");
+
+                                          _animate_timer?.cancel();
+                                          _animate_timer = null;
                                         });
                                       }),
                                 ),
@@ -205,7 +252,54 @@ class _ParingPage extends State<ParingPage> {
                   ),
                 ],
               ),
-            )));
+            )),
+        Visibility(
+            visible: (_animate_timer != null),
+            child: Container(
+                width: double.infinity,
+                height: double.infinity,
+                decoration: BoxDecoration(color: Color.fromARGB(225, 0, 0, 0)),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Icon(
+                        _icon,
+                        size: 45.0,
+                        color: Colors.white,
+                      ),
+                      const Text('Wi-Fi 페어링 중',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600)),
+                    ],
+                  ),
+                )))
+      ],
+    ));
+  }
+
+  void _Sending_Animate_On() {
+    _animate_timer = Timer.periodic(new Duration(milliseconds: 700), (timer) {
+      setState(() {
+        switch (_animate_state) {
+          case 0:
+            _icon = Icons.wifi_1_bar_rounded;
+            _animate_state = 1;
+            break;
+          case 1:
+            _icon = Icons.wifi_2_bar_rounded;
+            _animate_state = 2;
+            break;
+          case 2:
+            _icon = Icons.wifi_rounded;
+            _animate_state = 0;
+            break;
+        }
+      });
+    });
   }
 
   Future<void> _WifiScan() async {
@@ -237,16 +331,6 @@ class _ParingPage extends State<ParingPage> {
     } else {
       log("no its disable");
     }
-
-    for (var i = 0; i < 5; i++) {
-      ssid_list.add(Wifi("fuck u ${i}", i));
-    }
-  }
-
-  void Callback_Connect(String sn) {
-    setState(() {
-      TE_sn = sn;
-    });
   }
 
   void SetSN(String sn) {
