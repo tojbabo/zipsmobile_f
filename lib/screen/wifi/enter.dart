@@ -64,6 +64,10 @@ class _EnterPage extends State<EnterPage> {
                   children: [
                     GestureDetector(
                         onTap: () {
+                          // PA = ParingApp();
+                          // Navigator.push(context,
+                          //     MaterialPageRoute(builder: (context) => PA!));
+                          // return;
                           _FindDev_Animate();
                           PA = null;
                           connector.Listener_UDP(Connected_Event);
@@ -218,7 +222,7 @@ class _EnterPage extends State<EnterPage> {
         PA = ParingApp();
         Navigator.push(context, MaterialPageRoute(builder: (context) => PA!));
       }
-      paringKey.currentState?.SetSN(res);
+      paringKey.currentState?.SetBuildHouse(res);
     }
     // 연결이 끊어진 경우
     else {

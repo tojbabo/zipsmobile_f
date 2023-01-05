@@ -1,11 +1,10 @@
-const version = "1.4.2";
+import 'package:flutter/foundation.dart';
 
-//const g__servIp = 'main.zips.ai';
-const gServerIp = 'dev.zips.ai';
-const gHttpPort = 12000;
-const gHttpsPort = 12009;
+const version = "1.5.0";
 
-const gServHttpAdr = 'http://$gServerIp:$gHttpPort/';
+const gServerIp = (kDebugMode) ? 'dev.zips.ai' : 'home.zips.ai';
+const gHttpsPort = (kDebugMode) ? 10009 : 12009;
+
 const gServHttpsAdr = 'https://$gServerIp:$gHttpsPort/';
 
 const gAppInfo = "ip:$gServerIp"

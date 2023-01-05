@@ -56,6 +56,10 @@ void InitWebView(BuildContext context) {
           url: Uri.parse(gServHttpsAdr),
           postData: Uint8List.fromList(utf8.encode(body)));
     },
+    onReceivedServerTrustAuthRequest: (ctrl, challenge) async {
+      return ServerTrustAuthResponse(
+          action: ServerTrustAuthResponseAction.PROCEED);
+    },
   );
 }
 

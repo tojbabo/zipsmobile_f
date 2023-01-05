@@ -6,11 +6,10 @@ import 'ROM.dart';
 
 void main() async {
   log(version);
-  //runApp(MyApp());
 
-  runApp(MaterialApp(
+  runApp(const MaterialApp(
     debugShowCheckedModeBanner: false,
-    title: 'load',
+    title: 'ZIPSAI Mobile APP',
 
     /// 화면 구성 모듈 호출
     home: LoadAPP(),

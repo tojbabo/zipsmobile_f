@@ -28,7 +28,7 @@ class _ParingPage extends State<ParingPage> {
   late List<Wifi> ssid_list;
   late TextEditingController TE_ssid;
   late TextEditingController TE_password;
-  late String TE_sn;
+  late String TE_buildhouse;
   Connector connector = Connector();
 
   Timer? _animate_timer;
@@ -43,7 +43,7 @@ class _ParingPage extends State<ParingPage> {
     ssid_list = [];
     TE_ssid = TextEditingController();
     TE_password = TextEditingController();
-    TE_sn = '';
+    TE_buildhouse = '';
 
     if (Platform.isIOS) {
       setState(() {
@@ -76,13 +76,14 @@ class _ParingPage extends State<ParingPage> {
                       child: SizedBox(
                           height: 50.0,
                           child: Container(
-                              margin: EdgeInsets.only(
+                              margin: const EdgeInsets.only(
                                   left: 10.0, right: 10.0, bottom: 5.0),
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                               child: Row(children: <Widget>[
+                                // 뒤로가기 버튼
                                 IconButton(
                                     icon: const Icon(
                                       Icons.arrow_back,
@@ -92,8 +93,9 @@ class _ParingPage extends State<ParingPage> {
                                       connector.Disconnect_TCPUDP();
                                       Navigator.pop(context);
                                     }),
-                                const Text("SN:   "),
-                                Text(TE_sn)
+                                // SN
+                                const Text("동/호수:   "),
+                                Text(TE_buildhouse)
                               ])))),
                   // 와이파이 목록 리스트
                   Expanded(
@@ -183,6 +185,7 @@ class _ParingPage extends State<ParingPage> {
                           ),
                           child: Row(
                             children: <Widget>[
+                              // ssid, passwd 입력칸
                               Expanded(
                                 flex: 2,
                                 child: Column(
@@ -202,6 +205,9 @@ class _ParingPage extends State<ParingPage> {
                                     Expanded(
                                         child: Padding(
                                       child: TextField(
+                                        obscureText: true,
+                                        enableSuggestions: false,
+                                        autocorrect: false,
                                         controller: TE_password,
                                         decoration: const InputDecoration(
                                             isDense: true,
@@ -213,6 +219,7 @@ class _ParingPage extends State<ParingPage> {
                                   ],
                                 ),
                               ),
+                              // 페어링 버튼
                               Expanded(
                                 child: Padding(
                                   padding: const EdgeInsets.only(
@@ -333,9 +340,9 @@ class _ParingPage extends State<ParingPage> {
     }
   }
 
-  void SetSN(String sn) {
+  void SetBuildHouse(String sn) {
     setState(() {
-      TE_sn = sn;
+      TE_buildhouse = sn;
     });
   }
 }

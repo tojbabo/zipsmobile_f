@@ -7,12 +7,21 @@
 ####
 android min ver: 33
 IOS min ver : 10.0
-####
 
-####
 IOS - 
     required a higher minimum deployment target. 최소 버전 올려주기 ~> ios/Podfile
 ####
+####
+내 폰에서 안되는 문제가 있네 왜그럴까
+####
+
+#1.5.0
+[1] WiFi 페어링, SN잘못 표기되는 부분 수정 -> SN표기 불가 동 호수로 표기
+[1] 기본 연결 주소 aws로 변경.
+
+#1.4.3
+[1] Android 낮은버전에서 인증서 관련 서버 접속 안되던 문제 해결
+
 
 #1.4.2
 [2] wifi 리스트 출력 안됨 안내 추가    -ios

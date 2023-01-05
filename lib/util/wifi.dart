@@ -45,7 +45,7 @@ class Connector {
     udp_receiver = await UDP.bind(Endpoint.any(port: Port(_PORT_UDP)));
     _time = 3;
     Timer timer_udp = Timer.periodic(Duration(seconds: 1), (timer) {
-      _time--;
+      // _time--;
       if (_time == 0) {
         log('[UDP timer] timeout');
         udp_receiver?.close();
@@ -62,6 +62,7 @@ class Connector {
         // 데이터가 udp 브로드 캐스트인 경우
         if (str.length == 1024) {
           var payload = security.Get_UDP_Data(str);
+          // log(payload);
           json j = json(payload);
 
           // 메인 조절기가 보내는 연결 신호인 경우
