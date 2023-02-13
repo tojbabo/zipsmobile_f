@@ -71,20 +71,6 @@ class _LoadPage extends State<LoadPage> {
         gMacId = int.parse(readMacid);
       }
 
-      var idpwtemp = GetData(LOGININFO);
-      if (idpwtemp != '') {
-        var token = idpwtemp.split(',,');
-        gId = token[0];
-        gPw = token[1];
-      }
-
-      var sentemp = GetData(SENIOR);
-      if (sentemp == "") {
-        SetData(SENIOR, "0");
-      } else {
-        gSeniorMode = int.parse(sentemp);
-      }
-
       var autotemp = GetData(AUTORUNSERV);
       if (autotemp == "") {
         SetData(AUTORUNSERV, "1");

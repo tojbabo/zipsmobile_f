@@ -82,15 +82,6 @@ String _GetQueryBody() {
   // macid
   var macidquery = "macid=$gMacId";
 
-  // 시니어모드
-  var senior = "senior=$gSeniorMode";
-
-  // 로그인 정보 확인 - 있으면 자동 로그인
-  var loginfo = "";
-  if (gId != '' && gPw != '') {
-    loginfo = "&id=$gId&pw=$gPw";
-  }
-
   // 서비스 권한 확인
   var servenable = "servenable=$gServEnable";
 
@@ -100,17 +91,10 @@ String _GetQueryBody() {
   // 서비스 자동 실행
   var servautorun = "autoserv=$gServAuto";
 
-  var result = "$appver" +
-      "&$macidquery" +
-      "&$senior" +
+  var result = "$appver" + "&$macidquery";
 //      "&$servon" +
 //      "&$servenable" +
-//      "&$servautorun" +
-      "$loginfo";
-  //var result = "$appver&$senior$loginfo";
-
-  log(result);
-  //print(result);
+//      "&$servautorun";
 
   return result;
 }
@@ -147,33 +131,6 @@ void _ControllerSetHandler(
         SystemNavigator.pop();
       });
 
-  // 자동로그인 설정
-  const _AUTOLOGIN = "autologin";
-  controller.addJavaScriptHandler(
-      handlerName: _AUTOLOGIN,
-      callback: (arg) async {
-        bool flag = arg.cast<bool>()[0];
-        log('[$_AUTOLOGIN] mode: $flag');
-        if (flag) {
-          SetData(LOGININFO, '$gId,,$gPw');
-        } else {
-          RemoveData(LOGININFO);
-        }
-      });
-
-  //logininfo[적용 중]: 로그인 정보 가져옴
-  const _LOGININFO = "logininfo";
-  controller.addJavaScriptHandler(
-      handlerName: _LOGININFO,
-      callback: (arg) {
-        String param = arg.cast<String>()[0];
-        var datas = param.split(',');
-
-        log("[$_LOGININFO]id is : ${datas[0]}");
-        gId = datas[0];
-        gPw = datas[1];
-      });
-
   const _APPINFO = "getappinfo";
   controller.addJavaScriptHandler(
       handlerName: _APPINFO,
@@ -203,14 +160,9 @@ void _ControllerSetHandler(
       callback: (arg) async {
         await IsRunService();
 
-        var num = 0;
-        if (gId != '') num = 1;
-
         var res = "$gServEnable"
             ",$gServAuto"
-            ",$gServOn"
-            ",$gSeniorMode"
-            ",$num";
+            ",$gServOn";
 
         log("[$_APPSTATE] called : ${res}");
 
@@ -236,7 +188,6 @@ void _ControllerSetHandler(
       callback: (arg) async {
         var result = await GetNowLocation();
         return result;
-        //print("receive data from server $location");
       });
 
   //isrunservice: 서버에서 기기로 서비스 실행중인지 파악
