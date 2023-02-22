@@ -2,18 +2,22 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:zipsai_mobile/util/webview.dart';
 
-import '../util/logger.dart';
-
 class MainApp extends StatelessWidget {
+  const MainApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      theme: ThemeData(scaffoldBackgroundColor: const Color(0xff141620)),
-      home: MainPage(title: 'Flutter Demo Home Page'),
+      theme: ThemeData(
+        scaffoldBackgroundColor: const Color.fromARGB(255, 20, 22, 32),
+      ),
+      home: const MainPage(title: 'Flutter Demo Home Page'),
     );
   }
 }
