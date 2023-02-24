@@ -13,6 +13,9 @@ Future FileInit() async {
   });
 }
 
+/// 디버깅용
+///
+/// 파일 내 모든 데이터 출력
 void DEBUG_file_showDatas() {
   _read();
   print(_fileData);

@@ -1,9 +1,10 @@
-import 'dart:developer';
+/// 최초 로딩 화면.
+/// 앱 최초 실행 및 네트워크 연결 여부에 따라서
+/// 출력할 화면 선택
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:zipsai_mobile/screen/wifi/enter.dart';
-import 'package:zipsai_mobile/screen/wifi/paring.dart';
 import 'package:zipsai_mobile/screen/request.dart';
 import 'package:zipsai_mobile/util/file.dart';
 
@@ -43,11 +44,12 @@ class _LoadPage extends State<LoadPage> {
   @override
   void initState() {
     super.initState();
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       // 인터넷 연결 체크
       // 연결 안되어 있으면 페어링 모드로 전환
-      if (!await internetcheck()) {
-        // if (true) {
+      // if (!await internetcheck()) {
+      if (true) {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => EnterWiFi()));
         gParingMode = 1;
@@ -56,6 +58,8 @@ class _LoadPage extends State<LoadPage> {
 
       // 위치 권한 체크
       LocPermissionCheck();
+
+      // 서비스 실행 중인지 체크
       IsRunService();
 
       //FuckUTest();
@@ -63,6 +67,7 @@ class _LoadPage extends State<LoadPage> {
       // 파일 에서 셋팅 값 읽어옴
       await FileInit();
 
+      // macid 체크, 없으면 생성
       var readMacid = GetData(MACID);
       if (readMacid == '') {
         gMacId = MakeId();
@@ -71,6 +76,7 @@ class _LoadPage extends State<LoadPage> {
         gMacId = int.parse(readMacid);
       }
 
+      // 서비스 자동 실행여부
       var autotemp = GetData(AUTORUNSERV);
       if (autotemp == "") {
         SetData(AUTORUNSERV, "1");
@@ -80,7 +86,7 @@ class _LoadPage extends State<LoadPage> {
       }
 
       // 최초 실행 여부 판단
-      // 위치 권한 요청 화면 출력
+      // 최초 실행시 위치 권한 요청 화면 출력
       if (GetData(FIRSTLAUNCH) == '') {
         SetData(FIRSTLAUNCH, 'good');
 
@@ -88,7 +94,9 @@ class _LoadPage extends State<LoadPage> {
 
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => Request(true)));
-      } else {
+      }
+      // 아닌 경우 webview를 통한 정상접근
+      else {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => MainApp()));
       }

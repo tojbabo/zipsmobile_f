@@ -1,12 +1,11 @@
-import 'dart:developer';
-import 'dart:io';
-
+/// 메인 위젯
+/// 정상 적인 앱 실행시 웹서버로 붙는 위젯
 import 'package:flutter/material.dart';
 import 'package:zipsai_mobile/util/webview.dart';
 
-import '../util/logger.dart';
-
 class MainApp extends StatelessWidget {
+  const MainApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

@@ -4,6 +4,8 @@ import 'dart:math' as math;
 import 'package:encrypt/encrypt.dart' as en;
 import 'package:flutter/foundation.dart';
 
+/// 와이파이 페어링을 위한
+/// 조절기와의 통신에 있어서 암호화-복호화 하기 위한 클래스
 class Security {
   Security();
 
@@ -44,6 +46,7 @@ class Security {
     return result;
   }
 
+  /// UDP 패킷에서 PayLoad 부분을 추출하는 함수
   String _Get_UDP_Payload(List<int> bindata) {
     var payload_length = bindata[3] +
         (bindata[2] * math.pow(2, 8)) +
@@ -61,6 +64,7 @@ class Security {
     return tempstr;
   }
 
+  /// UDP 패킷에서 IV를 추출하는 함수
   String _Get_UDP_IV(List<int> bindata) {
     var iv_ary = bindata.sublist(4, 20);
     var iv_str = "";
@@ -70,6 +74,8 @@ class Security {
 
     return iv_str;
   }
+
+  /* 테스트 부분 */
 
   String Test_Encrypt(String testdata) {
     final key = en.Key.fromBase16(_KEY);

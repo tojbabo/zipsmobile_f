@@ -42,6 +42,7 @@ int MakeId() {
   return core * target;
 }
 
+/// 인터넷 연결 여부 확인
 Future<bool> internetcheck() async {
   try {
     var result = await InternetAddress.lookup("google.com");
@@ -57,6 +58,8 @@ Future<bool> internetcheck() async {
 
 class json {
   late List<Map<String, String>> list;
+
+  /// Json Stirng -> Json,, list에 key:value 쌍으로 저장
   json(String data) {
     list = [];
     int startidx = data.indexOf("{");
@@ -70,6 +73,7 @@ class json {
     }
   }
 
+  /// list 내 key 값으로 value 찾음.ㄴ
   String? get(String key) {
     for (var i = 0; i < list.length; i++) {
       if (list[i].keys.first == key) return list[i].values.first;

@@ -3,18 +3,19 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:wifi_scan/wifi_scan.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:zipsai_mobile/screen/wifi/enter.dart';
 
 import 'dart:io' show Platform;
 
 import '../../util/wifi.dart';
 
-GlobalKey<_ParingPage> paringKey = GlobalKey();
+GlobalKey<_ParingPage> KEY_WiFiParing = GlobalKey();
 
 class ParingApp extends StatelessWidget {
   const ParingApp({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => ParingPage(key: paringKey);
+  Widget build(BuildContext context) => ParingPage(key: KEY_WiFiParing);
 }
 
 class ParingPage extends StatefulWidget {
@@ -90,7 +91,8 @@ class _ParingPage extends State<ParingPage> {
                                       color: Colors.black,
                                     ),
                                     onPressed: () {
-                                      connector.Disconnect_TCPUDP();
+                                      KEY_WiFiEnter.currentState!
+                                          .DisConnected_Dev();
                                       Navigator.pop(context);
                                     }),
                                 // SN
@@ -235,21 +237,7 @@ class _ParingPage extends State<ParingPage> {
                                               fontSize: 18,
                                               fontWeight: FontWeight.w600)),
                                       onPressed: () {
-                                        _Sending_Animate_On();
-                                        connector.TCP_WiFi_Data_Send(
-                                                TE_ssid.text, TE_password.text)
-                                            .then((value) {
-                                          if (value == '') {
-                                            Fluttertoast.showToast(
-                                                msg: "뭔가 에러가 있다.");
-                                          } else {
-                                            Fluttertoast.showToast(
-                                                msg: "페어링을 완료했습니다.");
-                                          }
-
-                                          _animate_timer?.cancel();
-                                          _animate_timer = null;
-                                        });
+                                        _SendWiFiInfo();
                                       }),
                                 ),
                               ),
@@ -288,6 +276,23 @@ class _ParingPage extends State<ParingPage> {
     ));
   }
 
+  /// WiFi 정보를 전달하는 함수
+  void _SendWiFiInfo() {
+    _Sending_Animate_On();
+    connector.TCP_WiFi_Data_Send(TE_ssid.text, TE_password.text).then((value) {
+      if (value == '') {
+        Fluttertoast.showToast(msg: "뭔가 에러가 있다.");
+      } else {
+        Fluttertoast.showToast(msg: "페어링을 완료했습니다.");
+      }
+
+      _animate_timer?.cancel();
+      _animate_timer = null;
+      KEY_WiFiEnter.currentState!.DisConnected_Dev();
+    });
+  }
+
+  /// WiFi 데이터 전송 애니메이션 활성화
   void _Sending_Animate_On() {
     _animate_timer = Timer.periodic(new Duration(milliseconds: 700), (timer) {
       setState(() {
@@ -309,9 +314,9 @@ class _ParingPage extends State<ParingPage> {
     });
   }
 
+  /// WiFi Scan, IOS는 안될걸
   Future<void> _WifiScan() async {
     if (await WiFiScan.instance.hasCapability()) {
-      log("do enable");
       var err = await WiFiScan.instance.startScan();
       if (err != null) {
         log(err.toString());
@@ -335,11 +340,11 @@ class _ParingPage extends State<ParingPage> {
           }
         }
       }
-    } else {
-      log("no its disable");
     }
   }
 
+  /// Connect Event 에 대한 결과가 들어오는 함수
+  /// 들어온 동-단지 번호를 UI에 반영함.
   void SetBuildHouse(String sn) {
     setState(() {
       TE_buildhouse = sn;

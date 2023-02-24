@@ -1,13 +1,16 @@
+/// WiFi 페어링을 위해
+/// 네트워크 상에 조절기와 연결하는 위젯
+
 import 'dart:async';
 import 'dart:developer';
-import 'dart:ffi';
-
-import 'package:flutter/foundation.dart';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:zipsai_mobile/screen/wifi/paring.dart';
 import 'package:zipsai_mobile/util/wifi.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
+GlobalKey<_EnterPage> KEY_WiFiEnter = GlobalKey();
 
 class EnterWiFi extends StatelessWidget {
   const EnterWiFi({Key? key}) : super(key: key);
@@ -22,7 +25,7 @@ class EnterWiFi extends StatelessWidget {
 
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
         statusBarColor: Color.fromARGB(255, 54, 54, 54)));
-    return const EnterPage();
+    return EnterPage(key: KEY_WiFiEnter);
   }
 }
 
@@ -40,10 +43,10 @@ class _EnterPage extends State<EnterPage> {
   IconData _network_icon = Icons.wifi_rounded;
   int _animate_state = 2;
   Timer? _animate_timer;
+  Timer? _test;
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {});
   }
 
   @override
@@ -64,12 +67,20 @@ class _EnterPage extends State<EnterPage> {
                   children: [
                     GestureDetector(
                         onTap: () {
-                          // PA = ParingApp();
-                          // Navigator.push(context,
-                          //     MaterialPageRoute(builder: (context) => PA!));
-                          // return;
+                          PA = ParingApp();
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => PA!));
+                          fortest();
+                          return;
+
+                          /// 일단 찾기 애니메이션 활성화
                           _FindDev_Animate();
+
+                          /// 페이지 초기화
                           PA = null;
+
+                          /// UDP 리스너 활성화.
+                          /// 조절기 연동 리스너 연결
                           connector.Listener_UDP(Connected_Event);
                         },
                         child: Column(
@@ -182,6 +193,7 @@ class _EnterPage extends State<EnterPage> {
         ));
   }
 
+  ///조절기 찾기 애니메이션,,
   void _FindDev_Animate() {
     _animate_timer = Timer.periodic(new Duration(milliseconds: 700), (timer) {
       setState(() {
@@ -203,26 +215,32 @@ class _EnterPage extends State<EnterPage> {
     });
   }
 
-// 꺼지는 거 잘 동작함
+  // 테스팅용 해당 위젯 종료
   void tempfunc() async {
     await Future.delayed(Duration(seconds: 5));
-    if (paringKey.currentContext != null) {
-      Navigator.pop(paringKey.currentContext!);
+    if (KEY_WiFiParing.currentContext != null) {
+      Navigator.pop(KEY_WiFiParing.currentContext!);
     }
   }
 
+  /// 조절기와 연결됐을때 리스너
   void Connected_Event(String res) {
+    /// 애니메이션 종료
     _animate_timer?.cancel();
     setState(() {
       _animate_timer = null;
     });
+
     // 연결에 성공한 경우
     if (res != "") {
+      /// 아직 페어링 위젯이 없는 경우, 페어링 위젯 생성 및 변경
       if (PA == null) {
         PA = ParingApp();
         Navigator.push(context, MaterialPageRoute(builder: (context) => PA!));
       }
-      paringKey.currentState?.SetBuildHouse(res);
+
+      /// 페어링 위젯으로 동/호수 데이터 전달
+      KEY_WiFiParing.currentState?.SetBuildHouse(res);
     }
     // 연결이 끊어진 경우
     else {
@@ -230,10 +248,31 @@ class _EnterPage extends State<EnterPage> {
         Fluttertoast.showToast(msg: "네트워크에 조절기가 없습니다.");
       }
 
-      if (paringKey.currentContext != null) {
-        Navigator.pop(paringKey.currentContext!);
+      if (KEY_WiFiParing.currentContext != null) {
+        Navigator.pop(KEY_WiFiParing.currentContext!);
       }
-      PA = null;
+      DisConnected_Dev();
     }
+  }
+
+  void DisConnected_Dev() {
+    connector.Disconnect_TCPUDP();
+    PA = null;
+    _test?.cancel();
+  }
+
+  void fortest() async {
+    var i = 0;
+    _test = Timer.periodic(new Duration(seconds: 1), (timer) {
+      i++;
+      Connected_Event("$i");
+      if (i >= 10) {
+        Connected_Event("");
+        DisConnected_Dev();
+      }
+      if (PA == null) timer.cancel();
+
+      /// 페어링 위젯으로 동/호수 데이터 전달
+    });
   }
 }

@@ -29,6 +29,7 @@ Future<int> StartService() async {
   return 0;
 }
 
+/// 현재 위치를 가져오는 함수
 Future<String> GetNowLocation() async {
   //print('call now location()');
   try {
@@ -41,6 +42,7 @@ Future<String> GetNowLocation() async {
   }
 }
 
+/// 서비스 종료 함수
 Future<void> StopService() async {
   try {
     channel.invokeMethod(
@@ -52,6 +54,7 @@ Future<void> StopService() async {
   }
 }
 
+/// 서비스가 실행중인지 확인하는 함수
 Future<void> IsRunService() async {
   try {
     var value = await channel.invokeMethod('isrun');
@@ -68,6 +71,7 @@ Future<void> IsRunService() async {
   gServOn = 0;
 }
 
+/// 서비스 설정 데이터 ㄱ져오는 함수ㅜ
 Future<String> GetSettingData() async {
   //print('call now location()');
   try {
@@ -81,6 +85,8 @@ Future<String> GetSettingData() async {
   }
 }
 
+/* 디버깅용 */
+/// 서비스와 통신 테스트 함수
 Future<void> FuckUTest() async {
   channel.invokeMethod('test');
 }

@@ -1,3 +1,4 @@
+/// 위치 권한 획득용 위젯
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -67,7 +68,9 @@ class Request extends StatelessWidget {
   ///
   /// 위치 권한 허용 시 항상 허용 요청 화면으로 넘어감
   Future _requestPermission() async {
+    // 위치 권한이 허용된 경우
     if (await Permission.location.request().isGranted) {
+      // 항상 허용이 아니라면 항상 허용 요청
       if (await Permission.locationAlways.isGranted == false) {
         await Permission.locationAlways.request();
         //await openAppSettings();

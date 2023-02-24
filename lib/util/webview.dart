@@ -99,10 +99,10 @@ String _GetQueryBody() {
   return result;
 }
 
-// webview 자바 스크립트 핸들러
+/// webview 자바 스크립트 핸들러
 void _ControllerSetHandler(
     InAppWebViewController controller, BuildContext context) {
-  // URL 전송 및 실행
+  /// URL 전송 및 실행
   const _URL = "URL";
   controller.addJavaScriptHandler(
       handlerName: _URL,
@@ -112,7 +112,7 @@ void _ControllerSetHandler(
         launch(msg);
       });
 
-  // toast 실행
+  /// toast 실행
   const _TOAST = "toast";
   controller.addJavaScriptHandler(
       handlerName: _TOAST,
@@ -121,7 +121,7 @@ void _ControllerSetHandler(
         Fluttertoast.showToast(msg: msg);
       });
 
-  //앱 종료 이벤트
+  /// 앱 종료 이벤트
   const _CLOSE = "appclose";
   controller.addJavaScriptHandler(
       handlerName: _CLOSE,
@@ -131,6 +131,7 @@ void _ControllerSetHandler(
         SystemNavigator.pop();
       });
 
+  /// 앱 정보 전달
   const _APPINFO = "getappinfo";
   controller.addJavaScriptHandler(
       handlerName: _APPINFO,
@@ -152,8 +153,8 @@ void _ControllerSetHandler(
         return temp;
       });
 
-  ///서비스 관련부
-  // 서버로 서비스 관련 상태값 전달
+  /* 서비스 관련 */
+  /// 서버로 서비스 관련 상태값 전달
   const _APPSTATE = "appstate";
   controller.addJavaScriptHandler(
       handlerName: _APPSTATE,
@@ -169,7 +170,7 @@ void _ControllerSetHandler(
         return res;
       });
 
-  // 서버에서 기기로 서비스 실행
+  /// 서비스 실행 명령
   const _START_SERVICE = "startservice";
   controller.addJavaScriptHandler(
       handlerName: _START_SERVICE,
@@ -182,7 +183,7 @@ void _ControllerSetHandler(
         return 0;
       });
 
-  //getlastloc: 최종 위치 전달
+  /// getlastloc: 최종 위치 전달
   controller.addJavaScriptHandler(
       handlerName: "lastLocation",
       callback: (arg) async {
@@ -190,7 +191,7 @@ void _ControllerSetHandler(
         return result;
       });
 
-  //isrunservice: 서버에서 기기로 서비스 실행중인지 파악
+  /// isrunservice: 기기가 서비스 실행 중인지 확인
   controller.addJavaScriptHandler(
       handlerName: "isrunservice",
       callback: (arg) {
@@ -198,14 +199,14 @@ void _ControllerSetHandler(
         return v;
       });
 
-  //stopservice: 서버에서 기기로 서비스 종료`
+  /// stopservice: 서비스 종료 명령
   controller.addJavaScriptHandler(
       handlerName: "stopservice",
       callback: (arg) {
         StopService();
       });
 
-  //servreq: 권한 확인. 권한이 확인된 경우 true return
+  /// servreq: 기기가 서비스 관련 권한이 허용됐는지 확인
   controller.addJavaScriptHandler(
       handlerName: "servreq",
       callback: (arg) async {
@@ -213,7 +214,7 @@ void _ControllerSetHandler(
         return flag;
       });
 
-  //SwitchServAuto: 서버에서 기기로 서비스 실행
+  /// SwitchServAuto: 서비스 자동 실행 여부 스위칭 명령
   controller.addJavaScriptHandler(
       handlerName: "SwitchServAuto",
       callback: (arg) async {

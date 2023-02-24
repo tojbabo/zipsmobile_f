@@ -1,3 +1,6 @@
+/// 폰 내 로그 기록을 남기기 위해 구현 중
+/// print(), log() 등의 기록을 특정 로그 파일에 저장하고
+/// 추후에 로그 파일 전송을 하면 해당 로그를 전송할 수 있도록 구현할 예정
 import 'dart:developer';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';

@@ -39,7 +39,7 @@ class Connector {
     log('[connector]init');
   }
 
-  /// udp 수신자 생성
+  /// udp 수신자 생성 - 네트워크 내 UDP 패킷을 지속적으로 수신
   void Listener_UDP(Function Connect_Callback) async {
     if (udp_receiver != null) return;
     udp_receiver = await UDP.bind(Endpoint.any(port: Port(_PORT_UDP)));
@@ -116,6 +116,7 @@ class Connector {
     });
   }
 
+  /// TCP, UDP 통신 관련 객체들 전부 해제
   bool Disconnect_TCPUDP() {
     sock_tcp?.close();
     udp_receiver?.close();
@@ -123,9 +124,7 @@ class Connector {
     return true;
   }
 
-  /** tcp 연결 시도 
-   * ip: 연결 대상
-  */
+  /// 해당 IP 주소로 TCP 연결 시도
   Future<bool> Connect_TCP(String ip) async {
     try {
       // sock_tcp = await Socket.connect("127.0.0.1", _PORT_TCP,
@@ -152,18 +151,17 @@ class Connector {
     return is_connect_tcp;
   }
 
+  /// TCP 통신으로 에코잉 메시지를 보냄
   Future<bool> TCP_Echoing() async {
     if (sock_tcp == null) return false;
 
     var msg = Packet_Echo((await Get_My_Ip())!);
     sock_tcp?.add(msg);
 
-    // sock_tcp?.add(utf8.encode("dfasd"));
-    // sock_tcp?.write(String.fromCharCodes(msg));
-
     return true;
   }
 
+  /// TCP 통신으로 와이파이 정보를 보냄
   Future<String> TCP_WiFi_Data_Send(String ssid, String pw) async {
     if (sock_tcp == null) {
       return '';
@@ -180,6 +178,7 @@ class Connector {
     return String.fromCharCodes(msg);
   }
 
+  /// 와이파이의 수신 신호 세기를 구함
   Future<void> Get_RSSI() async {
     var info = NetworkInfo();
     var nowSsid = await info.getWifiName();
@@ -198,9 +197,8 @@ class Connector {
     rssi = 0;
   }
 
-/** ipnumber를 ip로 해석하는 함수
- * ipnumber: 32비트 ip를 숫자로 치환한 값. 
- */
+  /// ipnumber를 ip로 해석하는 함수
+  /// ipnumber: 32비트 ip를 숫자로 치환한 값.
   Future<String> Decode_IP(String ipnumber) async {
     var bin = int.parse(ipnumber).toRadixString(2);
     bin = bin.padLeft(32, '0');
@@ -212,6 +210,7 @@ class Connector {
     return ip;
   }
 
+  /// 에코잉에 사용되는 패킷을 만드는 함수
   List<int> Packet_Echo(String myip) {
     //'{"pairing":{"type":1,"ip":32,"serial":"0000000069","id":1,"hwaddr":"b00247a70859","rssi":-48}}';
     var ips = myip.split('.');
@@ -237,6 +236,7 @@ class Connector {
     return bin;
   }
 
+  /// 전송할 와이파이 정보 패킷을 만드는 함수
   List<int> Packet_Wifi(String netid, String ssid, String passwd) {
     //{"pairing":{"netid": 1080401, "type": 99, "serial": "1234567890", "ssid": "01080401", "pwd": "sc01080401" }}
     var payload =
@@ -260,14 +260,15 @@ class Connector {
     return bin;
   }
 
+  /// 내 디바이스의 IP 주소를 얻는 함수
   Future<String?> Get_My_Ip() async {
     var info = NetworkInfo();
     var ip = await info.getWifiIP();
     return ip;
   }
 
-  /**테스트 함수 */
-  /**  자기자신한테 udp 패킷 전송 */
+  /*테스트 함수 */
+  /*  자기자신한테 udp 패킷 전송 */
   void test_UDP_sender() async {
     var sender = await UDP.bind(Endpoint.any(port: const Port(61000)));
 
@@ -283,7 +284,7 @@ class Connector {
     sender.close();
   }
 
-  /** 테스트 tcp listen server */
+  /* 테스트 tcp listen server */
   void test_tcp_server() async {
     log('test server on');
     ServerSocket serverSocket =
