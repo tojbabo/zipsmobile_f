@@ -1,6 +1,7 @@
 /// 메인 위젯
 /// 정상 적인 앱 실행시 웹서버로 붙는 위젯
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:zipsai_mobile/util/webview.dart';
 
 class MainApp extends StatelessWidget {
@@ -8,11 +9,14 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      theme: ThemeData(scaffoldBackgroundColor: const Color(0xff141620)),
-      home: MainPage(title: 'Flutter Demo Home Page'),
+      theme: ThemeData(
+        scaffoldBackgroundColor: const Color.fromARGB(255, 20, 22, 32),
+      ),
+      home: const MainPage(title: 'Flutter Demo Home Page'),
     );
   }
 }
