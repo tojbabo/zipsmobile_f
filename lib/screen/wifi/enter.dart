@@ -67,11 +67,11 @@ class _EnterPage extends State<EnterPage> {
                   children: [
                     GestureDetector(
                         onTap: () {
-                          PA = ParingApp();
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => PA!));
-                          fortest();
-                          return;
+                          // PA = ParingApp();
+                          // Navigator.push(context,
+                          //     MaterialPageRoute(builder: (context) => PA!));
+                          // fortest();
+                          // return;
 
                           /// 일단 찾기 애니메이션 활성화
                           _FindDev_Animate();
