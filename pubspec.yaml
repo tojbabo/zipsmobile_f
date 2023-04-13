@@ -41,7 +41,6 @@ dev_dependencies:
   
   # 웹뷰용 
   flutter_inappwebview:
-    git: https://github.com/CodeEagle/flutter_inappwebview
   
   # 토스트 출력용
   fluttertoast:
@@ -67,6 +66,8 @@ dev_dependencies:
   # 와이파이 스캔 용
   wifi_scan:
   better_wifi_manager:
+
+  file:
 
   # 로컬 ip 가져오는용
   network_info_plus: 

@@ -126,7 +126,7 @@ void _ControllerSetHandler(
   controller.addJavaScriptHandler(
       handlerName: _CLOSE,
       callback: (arg) {
-        CookieManager().deleteAllCookies();
+        CookieManager.instance().deleteAllCookies();
         Navigator.of(context).pop(true);
         SystemNavigator.pop();
       });

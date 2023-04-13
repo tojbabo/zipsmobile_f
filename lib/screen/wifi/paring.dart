@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'dart:async';
 import 'dart:developer';
 import 'package:flutter/material.dart';
@@ -316,16 +318,17 @@ class _ParingPage extends State<ParingPage> {
 
   /// WiFi Scan, IOS는 안될걸
   Future<void> _WifiScan() async {
-    if (await WiFiScan.instance.hasCapability()) {
+    var can = await WiFiScan.instance.canStartScan();
+    if (can == CanStartScan.yes) {
       var err = await WiFiScan.instance.startScan();
       if (err != null) {
         log(err.toString());
       } else {
         var result = await WiFiScan.instance.getScannedResults();
-        if (result.hasError) {
+        if (result.isEmpty) {
           log(err.toString());
         } else {
-          var accesspoint = result.value;
+          var accesspoint = result;
           if (accesspoint != null) {
             ssid_list.clear();
             var templist = accesspoint.map((e) => e).toList();

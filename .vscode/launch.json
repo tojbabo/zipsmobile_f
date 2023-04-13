@@ -7,7 +7,7 @@
         {
             "name": "zipsmobile_f",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
         },
         {
             "name": "zipsmobile_f (profile mode)",
