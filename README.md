@@ -21,7 +21,8 @@ samples, guidance on mobile development, and a full API reference.
 
 
 ## Protocol
-[app] <> [server]<hr>
+[app] <> [server]
+
 - (UDP)[서버 위치 알림]               
     > (Server) {"type":"server","ip":"127.0.0.1"}
 - (TCP)[서버로 연결. token 알려줌]    
@@ -34,5 +35,5 @@ samples, guidance on mobile development, and a full API reference.
     > (Server) {"time":"123801","code":"123","location":A","type":"A","val":"123"}      
     >> hour*3600 + min*60 + sec*1 = time
 - (TCP)[이벤트에 대한 응답]           
-    > <App> {"type":"result","time":"123412","code":"123","res":"0"}              
-    0: default, 1: 대변, 2:소변, 3: 이상 없음
+    > (App) {"type":"result","time":"123412","code":"123","res":"0"}              
+    >> 0: default, 1: 대변, 2:소변, 3: 이상 없음
